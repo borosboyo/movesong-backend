@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: user
+  cloud:
+    config:
+      name: user
+      uri: ${CONFIG_SERVER:http://localhost:8081}
