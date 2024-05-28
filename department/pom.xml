@@ -11,7 +11,7 @@
 
     <properties>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-        <kotlin.version>1.9.23</kotlin.version>
+        <kotlin.version>2.0.0</kotlin.version>
     </properties>
 
     <dependencyManagement>
@@ -152,7 +152,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>21</jvmTarget>
                 </configuration>
             </plugin>
             <plugin>

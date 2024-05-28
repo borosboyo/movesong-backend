@@ -7,7 +7,7 @@ services:
     ports:
       - "9411:9411"
   config:
-    image: movesong/config:1.0-SNAPSHOT
+    image: borosboyo/config:1.0-SNAPSHOT
     ports:
       - "8088:8088"
     healthcheck:
@@ -16,7 +16,7 @@ services:
       timeout: 2s
       retries: 3
   discovery:
-    image: movesong/discovery:1.0-SNAPSHOT
+    image: borosboyo/discovery:1.0-SNAPSHOT
     ports:
       - "8061:8061"
     depends_on:
@@ -32,7 +32,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
   employee:
-    image: movesong/employee:1.0-SNAPSHOT
+    image: borosboyo/employee:1.0-SNAPSHOT
     ports:
       - "8080"
     depends_on:
@@ -45,7 +45,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
   department:
-    image: movesong/department:1.0-SNAPSHOT
+    image: borosboyo/department:1.0-SNAPSHOT
     ports:
       - "8080"
     depends_on:
@@ -59,7 +59,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
   organization:
-    image: movesong/organization:1.0-SNAPSHOT
+    image: borosboyo/organization:1.0-SNAPSHOT
     ports:
       - "8080"
     depends_on:
@@ -73,8 +73,73 @@ services:
       - zipkin
     environment:
       SPRING_PROFILES_ACTIVE: docker
+  email:
+    image: borosboyo/email:1.0-SNAPSHOT
+    ports:
+      - "8080"
+    depends_on:
+      discovery:
+        condition: service_healthy
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+  share:
+    image: borosboyo/share:1.0-SNAPSHOT
+    ports:
+      - "8080"
+    depends_on:
+      discovery:
+        condition: service_healthy
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+  subscription:
+    image: borosboyo/subscription:1.0-SNAPSHOT
+    ports:
+      - "8080"
+    depends_on:
+      discovery:
+        condition: service_healthy
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+  transform:
+    image: borosboyo/transform:1.0-SNAPSHOT
+    ports:
+      - "8080"
+    depends_on:
+      discovery:
+        condition: service_healthy
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+  user:
+    image: borosboyo/user:1.0-SNAPSHOT
+    ports:
+      - "8080"
+    depends_on:
+      discovery:
+        condition: service_healthy
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
   gateway:
-    image: movesong/gateway:1.0-SNAPSHOT
+    image: borosboyo/gateway:1.0-SNAPSHOT
     ports:
       - "8060:8060"
     depends_on:
@@ -89,8 +154,21 @@ services:
       - department
       - organization
       - zipkin
-  frontend:
-    image: movesong/frontend
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "5173:5173"
-    container_name: frontend
+      - "5050:80"
+# frontend:
+#   image: borosboyo/frontend
+#   ports:
+#     - "5173:5173"
+#   container_name: fronten

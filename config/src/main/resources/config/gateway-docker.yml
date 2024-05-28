@@ -7,9 +7,9 @@ eureka:
       defaultZone: http://discovery:8061/eureka/
 
 logging:
-  pattern: 
+  pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
-              
+
 spring:
   output:
     ansi:
@@ -20,30 +20,60 @@ spring:
         locator:
           enabled: true
       routes:
-      - id: employee
-        uri: lb://employee
-        predicates:
-        - Path=/employee/**
-        filters:
-        - RewritePath=/employee/(?<path>.*), /$\{path}
-      - id: department
-        uri: lb://department
-        predicates:
-        - Path=/department/**
-        filters:
-        - RewritePath=/department/(?<path>.*), /$\{path}
-      - id: organization
-        uri: lb://organization
-        predicates:
-        - Path=/organization/**
-        filters:
-        - RewritePath=/organization/(?<path>.*), /$\{path}
-      - id: openapi
-        uri: http://localhost:${server.port}
-        predicates:
-        - Path=/v3/api-docs/**
-        filters:
-        - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+        - id: employee
+          uri: lb://employee
+          predicates:
+            - Path=/employee/**
+          filters:
+            - RewritePath=/employee/(?<path>.*), /$\{path}
+        - id: department
+          uri: lb://department
+          predicates:
+            - Path=/department/**
+          filters:
+            - RewritePath=/department/(?<path>.*), /$\{path}
+        - id: organization
+          uri: lb://organization
+          predicates:
+            - Path=/organization/**
+          filters:
+            - RewritePath=/organization/(?<path>.*), /$\{path}
+        - id: email
+          uri: lb://email
+          predicates:
+            - Path=/email/**
+          filters:
+            - RewritePath=/email/(?<path>.*), /$\{path}
+        - id: share
+          uri: lb://share
+          predicates:
+            - Path=/share/**
+          filters:
+            - RewritePath=/share/(?<path>.*), /$\{path}
+        - id: subscription
+          uri: lb://subscription
+          predicates:
+            - Path=/subscription/**
+          filters:
+            - RewritePath=/subscription/(?<path>.*), /$\{path}
+        - id: transform
+          uri: lb://transform
+          predicates:
+            - Path=/transform/**
+          filters:
+            - RewritePath=/transform/(?<path>.*), /$\{path}
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/user/**
+          filters:
+            - RewritePath=/user/(?<path>.*), /$\{path}
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
 
 springdoc:
   swagger-ui:
@@ -54,7 +84,16 @@ springdoc:
         url: /v3/api-docs/department
       - name: organization
         url: /v3/api-docs/organization
-
+      - name: email
+        url: /v3/api-docs/email
+      - name: share
+        url: /v3/api-docs/share
+      - name: subscription
+        url: /v3/api-docs/subscription
+      - name: transform
+        url: /v3/api-docs/transform
+      - name: user
+        url: /v3/api-docs/user
 management:
   tracing:
     sampling:

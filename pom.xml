@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>1.9.23</kotlin.version>
+        <kotlin.version>2.0.0</kotlin.version>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
         <sonar.projectKey>borosboyo_movesong-backend</sonar.projectKey>
         <sonar.organization>borosboyo</sonar.organization>
@@ -30,6 +30,11 @@
         <module>department</module>
         <module>organization</module>
         <module>gateway</module>
+        <module>user</module>
+        <module>share</module>
+        <module>transform</module>
+        <module>subscription</module>
+        <module>email</module>
     </modules>
 
     <dependencyManagement>

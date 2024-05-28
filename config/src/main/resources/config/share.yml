@@ -1,0 +1,53 @@
+server:
+  port: 0
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8061/eureka/
+      
+logging:
+  pattern: 
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+
+springdoc:
+  packagesToScan: hu.bme.aut.share
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${db.host}:${db.port}/${db.name}?autoReconnect=true&useSSL=false&createDatabaseIfNotExist=true
+    username: ${db.username}
+    password: ${db.password}
+    hikari:
+      minimumIdle: 1
+      maximumPoolSize: 5
+      idleTimeout: 30000
+      poolName: movesong-connection-pooling
+      maxLifetime: 2000000
+      connectionTimeout: 60000
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: update
+    generate-ddl: true
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+db:
+  name: movesong-share
+  host: localhost
+  port: 5432
+  username: root
+  password: root
