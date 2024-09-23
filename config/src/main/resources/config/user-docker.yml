@@ -60,4 +60,4 @@ db:
   password: root
 
 movesong:
-  jwtSecret: 'c8720b2d802feae8139b2c34fc895d5c925b5370c77d1dfab34b9fb75c8dddcb'
+  jwtSecret: ${MOVESONG_JWT_SECRET}
