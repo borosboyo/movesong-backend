@@ -18,9 +18,8 @@ class JWTUtil {
     @Value("\${movesong.jwtSecret}")
     private lateinit var secretKey: String
 
-    //private lateinit var expiration: String
-
-    //TODO EXPIRATION CHANGE
+    @Value("\${movesong.jwtExpiration}")
+    private lateinit var expiration: String
 
     fun extractUsername(token: String?): String {
         return extractClaim(token) { obj: Claims -> obj.subject }
@@ -44,20 +43,10 @@ class JWTUtil {
             .setClaims(extraClaims)
             .setSubject(userDetails?.username)
             .setIssuedAt(Date(System.currentTimeMillis()))
-            .setExpiration(Date(System.currentTimeMillis() + 1000 * 6000 * 24))
+            .setExpiration(Date(System.currentTimeMillis() + 1000 * expiration.toLong() * 24))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact()
     }
-
-    //fun generateToken(email: String, type: String): String {
-    //    return Jwts
-    //        .builder()
-    //        .setSubject(email)
-    //        .setIssuedAt(Date(System.currentTimeMillis()))
-    //        .setExpiration(Date(System.currentTimeMillis() + 1000 * 6000 * 24))
-    //        .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-    //        .compact()
-    //}
 
     fun isTokenValid(token: String?): Boolean {
         return !isTokenExpired(token)

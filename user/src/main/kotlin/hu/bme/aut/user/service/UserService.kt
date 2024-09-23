@@ -38,17 +38,8 @@ open class UserService(
     private val authenticationManager: AuthenticationManager,
     private val contactRepository: ContactRepository
 ) {
-    @Transactional
-    open fun registerTest(authRequest: AuthRequest): AuthResponse {
-        //val accessToken: String = jwtUtil.generateToken(authRequest.email, "ACCESS")
-        //val refreshToken: String = jwtUtil.generateToken(authRequest.email, "REFRESH")
-//
-        //LOGGER.info("User registered: ${authRequest.email}")
-        //LOGGER.info("Access token: $accessToken")
-        //LOGGER.info("Refresh token: $refreshToken")
-        return AuthResponse("accessToken", "refreshToken")
-    }
 
+    private final val USER_NOT_FOUND = "User not found!"
 
     @Transactional
     @Throws(UserException::class)
@@ -70,7 +61,7 @@ open class UserService(
         val verificationToken: String = jwtUtil.generateToken(user)
         saveUserToken(user.id, verificationToken, TokenType.VERIFICATION)
 
-        //sendEmailToUserWithToken(user.getEmail(), EmailType.CONFIRM_REGISTRATION, verificationToken)
+        sendEmailToUserWithToken(user.getEmail(), EmailType.CONFIRM_REGISTRATION, verificationToken)
 
         return RegisterResp(User.toDto(userRepository.save(user)))
     }
@@ -134,7 +125,7 @@ open class UserService(
             sendEmailToUserWithToken(user.getEmail(), EmailType.CONFIRM_REGISTRATION, verificationToken)
             return ResendEnableResp(true)
         } else {
-            throw UserException("User not found!")
+            throw UserException(USER_NOT_FOUND)
         }
     }
 
@@ -157,14 +148,14 @@ open class UserService(
     @Transactional
     @Throws(UserException::class)
     open fun forgotPassword(req: ForgotPasswordReq): ForgotPasswordResp {
-        if(userRepository.existsByEmail(req.email)) {
+        if (userRepository.existsByEmail(req.email)) {
             val user = userRepository.findByEmail(req.email)
             val resetPasswordToken: String = jwtUtil.generateToken(user)
             saveUserToken(user.id, resetPasswordToken, TokenType.RESET_PASSWORD)
-            //sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
+            sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
             return ForgotPasswordResp(true)
         } else {
-            throw UserException("User not found!")
+            throw UserException(USER_NOT_FOUND)
         }
     }
 
@@ -175,10 +166,10 @@ open class UserService(
             val user = userRepository.findByEmail(req.email)
             val resetPasswordToken: String = jwtUtil.generateToken(user)
             saveUserToken(user.id, resetPasswordToken, TokenType.RESET_PASSWORD)
-            //sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
+            sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
             return ResendForgotPasswordResp(true)
         } else {
-            throw UserException("User not found!")
+            throw UserException(USER_NOT_FOUND)
         }
     }
 
@@ -225,7 +216,7 @@ open class UserService(
         }
     }
 
-    private fun sendEmailToUserWithToken(email: String, emailType: EmailType,token: String) {
+    private fun sendEmailToUserWithToken(email: String, emailType: EmailType, token: String) {
         emailApi.sendEmail(
             SendEmailReq(
                 userEmail = email,

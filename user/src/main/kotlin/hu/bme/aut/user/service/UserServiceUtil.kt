@@ -2,6 +2,7 @@ package hu.bme.aut.user.service
 
 import com.sanctionco.jmail.JMail
 import java.nio.charset.Charset
+import java.security.SecureRandom
 import java.sql.Timestamp
 import java.util.*
 import java.util.regex.Pattern
@@ -10,7 +11,7 @@ class UserServiceUtil {
     companion object {
         fun generateRandomString(): String {
             val array = ByteArray(12)
-            Random().nextBytes(array)
+            SecureRandom().nextBytes(array)
             return String(array, Charset.forName("UTF-8"))
         }
 

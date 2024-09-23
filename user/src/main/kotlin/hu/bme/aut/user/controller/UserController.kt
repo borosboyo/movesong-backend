@@ -16,10 +16,6 @@ class UserController(
     private val userService: UserService
 ) : UserApi {
 
-    override fun registerTest(@RequestBody authRequest: AuthRequest): ResponseEntity<AuthResponse> {
-        return ResponseEntity.ok(userService.registerTest(authRequest))
-    }
-
     override fun register(@RequestBody authRequest: RegisterReq): ResponseEntity<RegisterResp> {
         return ResponseEntity.ok(userService.register(authRequest))
     }

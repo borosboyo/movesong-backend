@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 
 @FeignClient(name = "email")
 @Api(tags = ["email"], value = "Email controller to handle all email related requests")
-interface EmailApi {
+fun interface EmailApi {
     @PostMapping("/sendEmail")
     @ApiOperation(value = "Send email to a user", response = SendEmailResp::class, nickname = "sendEmail")
     fun sendEmail(@RequestBody req: SendEmailReq): ResponseEntity<SendEmailResp>

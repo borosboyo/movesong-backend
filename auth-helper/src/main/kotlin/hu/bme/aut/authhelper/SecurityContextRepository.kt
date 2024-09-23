@@ -26,20 +26,20 @@ class SecurityContextRepository(
         val request = swe.request
         val authHeader = request.headers.getFirst(HttpHeaders.AUTHORIZATION)
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        return if (authHeader != null && authHeader.startsWith("Bearer ")) {
             val authToken = authHeader.substring(7)
             val username = jwtUtil.extractUsername(authToken)
 
             val auth: Authentication = UsernamePasswordAuthenticationToken(
                 username, authToken
             )
-            return authenticationManager.authenticate(auth).map { authentication ->
+            authenticationManager.authenticate(auth).map { authentication ->
                 SecurityContextImpl(
                     authentication
                 )
             }
         } else {
-            return Mono.empty()
+            Mono.empty()
         }
     }
 }

@@ -102,3 +102,7 @@ management:
   tracing:
     sampling:
       probability: 1.0
+
+movesong:
+  jwtSecret: ${MOVESONG_JWT_SECRET}
+  jwtExpiration: ${MOVESONG_JWT_EXPIRATION}

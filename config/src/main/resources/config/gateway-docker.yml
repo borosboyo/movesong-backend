@@ -104,3 +104,7 @@ management:
   zipkin:
     tracing:
       endpoint: http://zipkin:9411/api/v2/spans
+
+movesong:
+  jwtSecret: ${MOVESONG_JWT_SECRET}
+  jwtExpiration: ${MOVESONG_JWT_EXPIRATION}

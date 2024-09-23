@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody
 @FeignClient(name = "user")
 @Api(tags = ["user"], value = "User controller to handle all user related requests")
 interface UserApi {
-    @PostMapping(value = ["/registerTest"])
-    fun registerTest(@RequestBody authRequest: AuthRequest): ResponseEntity<AuthResponse>
-
     @PostMapping(value = ["/register"])
     @ApiOperation(value = "Register a user", response = RegisterResp::class, nickname = "register")
     @Throws(UserException::class)
