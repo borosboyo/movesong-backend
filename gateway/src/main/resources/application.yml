@@ -9,3 +9,6 @@ spring:
     name: gateway
   config:
     import: "optional:configserver:http://localhost:8088"
+
+movesong:
+  jwtSecret: 'c8720b2d802feae8139b2c34fc895d5c925b5370c77d1dfab34b9fb75c8dddcb'
