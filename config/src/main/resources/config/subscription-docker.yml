@@ -54,3 +54,8 @@ db:
   port: 5432
   username: root
   password: root
+
+movesong:
+  clientBaseUrl: http://localhost:5173
+  stripe:
+    secretKey: sk_test_51Q2wPVIRpKoZz4PJeDo6pHFYOjb5G6O36ciVBmjsRSipEvWPs3D416ZINQCc9ExgQDuJYcmVO5IpszZGtOuPPWGz00heqHTUBa

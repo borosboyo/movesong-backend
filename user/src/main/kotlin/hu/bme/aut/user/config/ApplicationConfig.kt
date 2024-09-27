@@ -18,7 +18,7 @@ open class ApplicationConfig(
     @Bean
     open fun userDetailsService(): UserDetailsService? {
         return UserDetailsService { username ->
-            userRepository.findByEmail(username)
+            userRepository.findByUsername(username)
         }
     }
 

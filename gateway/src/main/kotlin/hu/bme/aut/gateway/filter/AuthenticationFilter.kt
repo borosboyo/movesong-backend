@@ -24,13 +24,15 @@ open class AuthenticationFilter(
 
     override fun filter(exchange: ServerWebExchange, chain: GatewayFilterChain): Mono<Void> {
         val request: ServerHttpRequest = exchange.request
+        LOGGER.info(routerValidator.isSecured.test(request).toString())
+        LOGGER.info("--------------------------------------")
         if (routerValidator.isSecured.test(request)) {
             if (this.isAuthMissing(request)) {
                 return this.onError(exchange, HttpStatus.UNAUTHORIZED)
             }
             val authHeader = this.getAuthHeader(request)
             val jwt = authHeader.substring(7)
-            if (jwtUtil.isTokenValid(jwt)) {
+            if (!jwtUtil.isTokenValid(jwt)) {
                 return this.onError(exchange, HttpStatus.FORBIDDEN)
             }
 

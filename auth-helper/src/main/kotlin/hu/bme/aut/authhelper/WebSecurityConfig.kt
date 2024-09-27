@@ -1,5 +1,6 @@
 package hu.bme.aut.authhelper
 
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpMethod
@@ -23,6 +24,8 @@ class WebSecurityConfig(
 
     private val urls: Array<String> = arrayOf(
         "/user/register",
+        "/user/enable",
+        "/user/login",
     )
 
     @Bean
@@ -33,6 +36,7 @@ class WebSecurityConfig(
                     Mono.fromRunnable {
                         swe.response.statusCode = HttpStatus.UNAUTHORIZED
                         if (e != null) {
+                            LOGGER.info("WSC" + swe.request.toString())
                             Mono.error<Any>(e)
                         }
                     }
@@ -41,6 +45,7 @@ class WebSecurityConfig(
                     Mono.fromRunnable {
                         swe.response.statusCode = HttpStatus.FORBIDDEN
                         if (e != null) {
+                            LOGGER.info("WSC" + swe.request.toString())
                             Mono.error<Any>(e)
                         }
                     }
@@ -58,5 +63,9 @@ class WebSecurityConfig(
                 exchangeSpec.anyExchange().authenticated()
             }
             .build()
+    }
+
+    companion object {
+        private val LOGGER = LoggerFactory.getLogger(WebSecurityConfig::class.java)
     }
 }

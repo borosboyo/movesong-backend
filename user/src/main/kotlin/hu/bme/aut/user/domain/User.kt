@@ -1,6 +1,5 @@
 package hu.bme.aut.user.domain
 
-import hu.bme.aut.userapi.dto.UserDto
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -22,6 +21,12 @@ open class User(
     @Column(name = "username", nullable = false)
     private var username: String,
 
+    @Column(name = "first_name", nullable = false)
+    open var firstName: String,
+
+    @Column(name = "last_name", nullable = false)
+    open var lastName: String,
+
     @Column(name = "email", nullable = false)
     private var email: String,
 
@@ -36,7 +41,17 @@ open class User(
     open var role: Role = Role.USER,
 
     ) : UserDetails {
-    constructor() : this(0, "", "", "", false, Role.USER)
+
+    constructor() : this(
+        0,
+        "",
+        "",
+        "",
+        "",
+        "",
+        false,
+        Role.USER
+    )
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority(role.name))
@@ -72,15 +87,5 @@ open class User(
 
     override fun isEnabled(): Boolean {
         return enabled
-    }
-
-    companion object {
-        fun fromDto(userDto: UserDto): User {
-            return User(userDto.id, userDto.username, userDto.email, "", userDto.enabled)
-        }
-
-        fun toDto(user: User): UserDto {
-            return UserDto(user.id, user.username, user.email, "", user.enabled)
-        }
     }
 }

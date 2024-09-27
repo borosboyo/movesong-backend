@@ -17,50 +17,55 @@ interface UserApi {
     @PostMapping(value = ["/register"])
     @ApiOperation(value = "Register a user", response = RegisterResp::class, nickname = "register")
     @Throws(UserException::class)
-    fun register(@RequestBody authRequest: RegisterReq): ResponseEntity<RegisterResp>
+    fun register(@RequestBody req: RegisterReq): ResponseEntity<RegisterResp>
 
     @PostMapping(value = ["/login"])
     @ApiOperation(value = "Login the user", response = LoginResp::class, nickname = "login")
     @Throws(UserException::class)
-    fun login(@RequestBody authRequest: LoginReq): ResponseEntity<LoginResp>
+    fun login(@RequestBody req: LoginReq): ResponseEntity<LoginResp>
 
     @PostMapping(value = ["/enable"])
     @ApiOperation(value = "Enable the user", response = EnableResp::class, nickname = "enable")
     @Throws(UserException::class)
-    fun enable(@RequestBody enableReq: EnableReq): ResponseEntity<EnableResp>
+    fun enable(@RequestBody req: EnableReq): ResponseEntity<EnableResp>
 
     @PostMapping(value = ["/resendEnable"])
     @ApiOperation(value = "Resend the enable email to the user", response = ResendEnableResp::class, nickname = "resendEnable")
     @Throws(UserException::class)
-    fun resendEnable(@RequestBody resendEnableReq: ResendEnableReq): ResponseEntity<ResendEnableResp>
+    fun resendEnable(@RequestBody req: ResendEnableReq): ResponseEntity<ResendEnableResp>
 
     @PostMapping(value = ["/updatePassword"])
     @ApiOperation(value = "Update the password of the user", response = UpdatePasswordResp::class, nickname = "updatePassword")
     @Throws(UserException::class)
-    fun updatePassword(@RequestBody updateReq: UpdatePasswordReq): ResponseEntity<UpdatePasswordResp>
+    fun updatePassword(@RequestBody req: UpdatePasswordReq): ResponseEntity<UpdatePasswordResp>
 
     @PostMapping(value = ["/forgotPassword"])
     @ApiOperation(value = "Forgot the password of the user", response = ForgotPasswordResp::class, nickname = "forgotPassword")
     @Throws(UserException::class)
-    fun forgotPassword(@RequestBody forgotReq: ForgotPasswordReq): ResponseEntity<ForgotPasswordResp>
+    fun forgotPassword(@RequestBody req: ForgotPasswordReq): ResponseEntity<ForgotPasswordResp>
 
     @PostMapping(value = ["/resendForgotPassword"])
     @ApiOperation(value = "Resend the forgot password email to the user", response = ResendForgotPasswordResp::class, nickname = "resendForgotPassword")
     @Throws(UserException::class)
-    fun resendForgotPassword(@RequestBody resendForgotReq: ResendForgotPasswordReq): ResponseEntity<ResendForgotPasswordResp>
+    fun resendForgotPassword(@RequestBody req: ResendForgotPasswordReq): ResponseEntity<ResendForgotPasswordResp>
+
+    @PostMapping(value = ["/checkForgotPasswordToken"])
+    @ApiOperation(value = "Check the forgot password token of the user", response = CheckForgotPasswordTokenResp::class, nickname = "checkForgotPasswordToken")
+    @Throws(UserException::class)
+    fun checkForgotPasswordToken(@RequestBody req: CheckForgotPasswordTokenReq): ResponseEntity<CheckForgotPasswordTokenResp>
 
     @PostMapping(value = ["/saveForgotPassword"])
     @ApiOperation(value = "Save the forgot password of the user", response = SaveForgotPasswordResp::class, nickname = "saveForgotPassword")
     @Throws(UserException::class)
-    fun saveForgotPassword(@RequestBody saveForgotReq: SaveForgotPasswordReq): ResponseEntity<SaveForgotPasswordResp>
+    fun saveForgotPassword(@RequestBody req: SaveForgotPasswordReq): ResponseEntity<SaveForgotPasswordResp>
 
     @PostMapping(value = ["/delete"])
     @ApiOperation(value = "Delete the user", response = DeleteResp::class, nickname = "delete")
     @Throws(UserException::class)
-    fun delete(@RequestBody deleteReq: DeleteReq): ResponseEntity<DeleteResp>
+    fun delete(@RequestBody req: DeleteReq): ResponseEntity<DeleteResp>
 
     @PostMapping(value = ["/contact"])
     @ApiOperation(value = "Contact request from the user", response = ContactResp::class, nickname = "contact")
     @Throws(UserException::class)
-    fun contact(@RequestBody contactReq: ContactReq): ResponseEntity<ContactResp>
+    fun contact(@RequestBody req: ContactReq): ResponseEntity<ContactResp>
 }
