@@ -9,6 +9,12 @@ open class RouterValidator {
     companion object {
         val openApiEndpoints: List<String> = listOf(
             "/user/register",
+            "/user/enable",
+            "/user/resendEnable",
+            "/user/login",
+            "/user/forgotPassword",
+            "/user/resendForgotPassword",
+            "/user/checkForgotPasswordToken",
         )
     }
 

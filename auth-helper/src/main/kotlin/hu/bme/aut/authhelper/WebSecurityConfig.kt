@@ -23,6 +23,12 @@ class WebSecurityConfig(
 
     private val urls: Array<String> = arrayOf(
         "/user/register",
+        "/user/enable",
+        "/user/resendEnable",
+        "/user/login",
+        "/user/forgotPassword",
+        "/user/resendForgotPassword",
+        "/user/checkForgotPasswordToken",
     )
 
     @Bean

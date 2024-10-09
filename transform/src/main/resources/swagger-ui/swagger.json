@@ -1,0 +1,253 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "REST API SPEC FOR MOVESONG FRONTEND",
+    "version" : "v1",
+    "title" : "REST API SPEC FOR MOVESONG FRONTEND"
+  },
+  "host" : "localhost:8060",
+  "basePath" : "/transform",
+  "tags" : [ {
+    "name" : "transform"
+  } ],
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/connectSpotifyAccount" : {
+      "post" : {
+        "tags" : [ "transform" ],
+        "summary" : "Connect the user's spotify account",
+        "description" : "",
+        "operationId" : "connectSpotifyAccount",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ConnectSpotifyAccountReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ConnectSpotifyAccountResp"
+            }
+          }
+        }
+      }
+    },
+    "/connectYoutubeAccount" : {
+      "post" : {
+        "tags" : [ "transform" ],
+        "summary" : "Connect the user's youtube account",
+        "description" : "",
+        "operationId" : "connectYoutubeAccount",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ConnectYoutubeAccountReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ConnectYoutubeAccountResp"
+            }
+          }
+        }
+      }
+    },
+    "/convertToSpotify" : {
+      "post" : {
+        "tags" : [ "transform" ],
+        "summary" : "Convert a youtube playlist to a spotify playlist",
+        "description" : "",
+        "operationId" : "convertToSpotify",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ConvertToSpotifyReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ConvertToSpotifyResp"
+            }
+          }
+        }
+      }
+    },
+    "/convertToYoutube" : {
+      "post" : {
+        "tags" : [ "transform" ],
+        "summary" : "Convert a spotify playlist to a youtube playlist",
+        "description" : "",
+        "operationId" : "convertToYoutube",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ConvertToYoutubeReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ConvertToYoutubeResp"
+            }
+          }
+        }
+      }
+    },
+    "/findConnectionsByMovesongEmail" : {
+      "post" : {
+        "tags" : [ "transform" ],
+        "summary" : "Find all connections by the user's movesong email",
+        "description" : "",
+        "operationId" : "findConnectionsByMovesongEmail",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/FindConnectionsByMovesongEmailReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/FindConnectionsByMovesongEmailResp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "ConnectSpotifyAccountReq" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "state" : {
+          "type" : "string"
+        },
+        "movesongEmail" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ConnectSpotifyAccountResp" : {
+      "type" : "object",
+      "properties" : {
+        "success" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "ConnectYoutubeAccountReq" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "movesongEmail" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ConnectYoutubeAccountResp" : {
+      "type" : "object",
+      "properties" : {
+        "success" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "ConnectionDto" : {
+      "type" : "object",
+      "properties" : {
+        "movesongEmail" : {
+          "type" : "string"
+        },
+        "connectionType" : {
+          "type" : "string"
+        },
+        "accessToken" : {
+          "type" : "string"
+        },
+        "refreshToken" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ConvertToSpotifyReq" : {
+      "type" : "object",
+      "properties" : {
+        "playlistId" : {
+          "type" : "string"
+        },
+        "movesongEmail" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ConvertToSpotifyResp" : {
+      "type" : "object",
+      "properties" : {
+        "success" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "ConvertToYoutubeReq" : {
+      "type" : "object",
+      "properties" : {
+        "playlistId" : {
+          "type" : "string"
+        },
+        "movesongEmail" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ConvertToYoutubeResp" : {
+      "type" : "object",
+      "properties" : {
+        "success" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "FindConnectionsByMovesongEmailReq" : {
+      "type" : "object",
+      "properties" : {
+        "movesongEmail" : {
+          "type" : "string"
+        }
+      }
+    },
+    "FindConnectionsByMovesongEmailResp" : {
+      "type" : "object",
+      "properties" : {
+        "connections" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ConnectionDto"
+          }
+        }
+      }
+    }
+  }
+}

@@ -27,9 +27,6 @@
         <module>auth-helper</module>
         <module>discovery</module>
         <module>config</module>
-        <module>employee</module>
-        <module>department</module>
-        <module>organization</module>
         <module>gateway</module>
         <module>email</module>
         <module>email-api</module>
