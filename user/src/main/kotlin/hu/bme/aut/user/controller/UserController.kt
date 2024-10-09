@@ -56,6 +56,10 @@ class UserController(
         return ResponseEntity.ok(userService.contact(contactReq))
     }
 
+    override fun findUserIdByEmail(req: FindUserIdByEmailReq): ResponseEntity<FindUserIdByEmailResp> {
+        return ResponseEntity.ok(userService.findUserIdByEmail(req))
+    }
+
     companion object {
         private val LOGGER = LoggerFactory.getLogger(UserController::class.java)
     }

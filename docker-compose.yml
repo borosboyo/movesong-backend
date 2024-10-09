@@ -11,7 +11,7 @@ services:
     ports:
       - "8088:8088"
     healthcheck:
-      test: curl --fail http://localhost:8088/employee/docker  || exit 1
+      test: curl --fail http://localhost:8088/user/docker  || exit 1
       interval: 5s
       timeout: 2s
       retries: 3
@@ -29,48 +29,6 @@ services:
       interval: 4s
       timeout: 2s
       retries: 3
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-  employee:
-    image: borosboyo/employee:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - zipkin
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-  department:
-    image: borosboyo/department:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - employee
-      - zipkin
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-  organization:
-    image: borosboyo/organization:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - employee
-      - department
-      - zipkin
     environment:
       SPRING_PROFILES_ACTIVE: docker
   email:
@@ -150,10 +108,12 @@ services:
     links:
       - config
       - discovery
-      - employee
-      - department
-      - organization
       - zipkin
+      - user
+      - email
+      - share
+      - subscription
+      - transform
   postgres:
     image: postgres
     environment:

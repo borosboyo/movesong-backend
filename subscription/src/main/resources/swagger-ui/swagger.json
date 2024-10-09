@@ -1,0 +1,286 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "REST API SPEC FOR MOVESONG FRONTEND",
+    "version" : "v1",
+    "title" : "REST API SPEC FOR MOVESONG FRONTEND"
+  },
+  "host" : "localhost:8060",
+  "basePath" : "/subscription",
+  "tags" : [ {
+    "name" : "subscription"
+  } ],
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/cancelSubscription" : {
+      "post" : {
+        "tags" : [ "subscription" ],
+        "summary" : "cancelSubscription ",
+        "description" : "",
+        "operationId" : "cancelSubscription",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/CancelSubscriptionReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/CancelSubscriptionResp"
+            }
+          }
+        }
+      }
+    },
+    "/findSubscription" : {
+      "post" : {
+        "tags" : [ "subscription" ],
+        "summary" : "findSubscription ",
+        "description" : "",
+        "operationId" : "findSubscription",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/FindSubscriptionReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/FindSubscriptionResp"
+            }
+          }
+        }
+      }
+    },
+    "/findSubscriptionByUserEmail" : {
+      "post" : {
+        "tags" : [ "subscription" ],
+        "summary" : "findSubscriptionByUserEmail ",
+        "description" : "",
+        "operationId" : "findSubscriptionByUserEmail",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/FindSubscriptionByUserEmailReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/FindSubscriptionResp"
+            }
+          }
+        }
+      }
+    },
+    "/saveSubscription" : {
+      "post" : {
+        "tags" : [ "subscription" ],
+        "summary" : "saveSubscription ",
+        "description" : "",
+        "operationId" : "saveSubscription",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/SaveSubscriptionReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SaveSubscriptionResp"
+            }
+          }
+        }
+      }
+    },
+    "/subscription" : {
+      "post" : {
+        "tags" : [ "subscription" ],
+        "summary" : "subscription ",
+        "description" : "",
+        "operationId" : "subscription",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/SubscriptionReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/SubscriptionResp"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "CancelSubscriptionReq" : {
+      "type" : "object",
+      "properties" : {
+        "subscriptionId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "CancelSubscriptionResp" : {
+      "type" : "object",
+      "properties" : {
+        "subscriptionStatus" : {
+          "type" : "string"
+        }
+      }
+    },
+    "FindSubscriptionByUserEmailReq" : {
+      "type" : "object",
+      "properties" : {
+        "userEmail" : {
+          "type" : "string"
+        }
+      }
+    },
+    "FindSubscriptionReq" : {
+      "type" : "object",
+      "properties" : {
+        "subscriptionId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "FindSubscriptionResp" : {
+      "type" : "object",
+      "properties" : {
+        "userId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "customerId" : {
+          "type" : "string"
+        },
+        "userEmail" : {
+          "type" : "string"
+        },
+        "username" : {
+          "type" : "string"
+        },
+        "subscriptionId" : {
+          "type" : "string"
+        },
+        "productId" : {
+          "type" : "string"
+        },
+        "currentPeriodEnd" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "price" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "interval" : {
+          "type" : "string"
+        }
+      }
+    },
+    "SaveSubscriptionReq" : {
+      "type" : "object",
+      "properties" : {
+        "userId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "userEmail" : {
+          "type" : "string"
+        },
+        "username" : {
+          "type" : "string"
+        },
+        "customerId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "SaveSubscriptionResp" : {
+      "type" : "object",
+      "properties" : {
+        "userId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "customerId" : {
+          "type" : "string"
+        },
+        "userEmail" : {
+          "type" : "string"
+        },
+        "username" : {
+          "type" : "string"
+        },
+        "subscriptionId" : {
+          "type" : "string"
+        },
+        "productId" : {
+          "type" : "string"
+        },
+        "currentPeriodEnd" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "price" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "interval" : {
+          "type" : "string"
+        }
+      }
+    },
+    "SubscriptionReq" : {
+      "type" : "object",
+      "properties" : {
+        "email" : {
+          "type" : "string"
+        },
+        "username" : {
+          "type" : "string"
+        },
+        "interval" : {
+          "type" : "string"
+        },
+        "productId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "SubscriptionResp" : {
+      "type" : "object",
+      "properties" : {
+        "url" : {
+          "type" : "string"
+        },
+        "customerId" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}

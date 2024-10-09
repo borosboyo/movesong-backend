@@ -27,6 +27,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
+
 @Service
 @Import(JWTUtil::class)
 open class UserService(
@@ -93,7 +94,15 @@ open class UserService(
         }
 
         val accessToken: String = jwtUtil.generateToken(user)
-        return LoginResp(User.toDto(user), accessToken)
+        saveUserToken(user.id, accessToken, TokenType.BEARER)
+        return LoginResp(
+            id = user.id,
+            accessToken = accessToken,
+            email = user.getEmail(),
+            username = user.username,
+            firstName = user.firstName,
+            lastName = user.lastName
+        )
     }
 
     @Transactional
@@ -133,13 +142,18 @@ open class UserService(
     @Throws(UserException::class)
     open fun updatePassword(req: UpdatePasswordReq): UpdatePasswordResp {
         try {
-            val user = userRepository.findByUsername(req.username)
+            val user = userRepository.findByEmail(req.email)
             if (!passwordEncoder.matches(req.oldPassword, user.password)) {
                 throw UserException("Old password is incorrect!")
             }
-            user.password = passwordEncoder.encode(req.newPassword)
-            userRepository.save(user)
-            return UpdatePasswordResp(true)
+            if (!UserServiceUtil.isPasswordValid(req.newPassword)
+            ) {
+                throw UserException("There is an error in the conditions of the password field!")
+            } else {
+                user.password = passwordEncoder.encode(req.newPassword)
+                userRepository.save(user)
+                return UpdatePasswordResp(true)
+            }
         } catch (e: Exception) {
             throw UserException(e.message)
         }
@@ -169,7 +183,34 @@ open class UserService(
             sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
             return ResendForgotPasswordResp(true)
         } else {
-            throw UserException(USER_NOT_FOUND)
+            throw UserException(userNotFound)
+        }
+    }
+
+    @Transactional
+    @Throws(UserException::class)
+    open fun checkForgotPasswordToken(req: CheckForgotPasswordTokenReq): CheckForgotPasswordTokenResp {
+        try {
+            val token = tokenRepository.findByToken(req.token.trim())
+            when {
+                token.userId != userRepository.findByEmail(req.email).id -> {
+                    throw UserException("Token is not valid for this user!")
+                }
+                token.expired -> {
+                    throw UserException("Token is expired!")
+                }
+                token.revoked -> {
+                    throw UserException("Token is revoked!")
+                }
+                token.tokenType != TokenType.RESET_PASSWORD -> {
+                    throw UserException("Token is not a reset password token!")
+                }
+                else -> {
+                    return CheckForgotPasswordTokenResp(true)
+                }
+            }
+        } catch (e: Exception) {
+            throw UserException(e.message)
         }
     }
 
@@ -177,10 +218,9 @@ open class UserService(
     @Throws(UserException::class)
     open fun saveForgotPassword(req: SaveForgotPasswordReq): SaveForgotPasswordResp {
         try {
-            val token: Token = tokenRepository.findByToken(req.token.trim())
-            val user = userRepository.findById(token.userId)
-            user.get().password = passwordEncoder.encode(req.newPassword)
-            userRepository.save(user.get())
+            val user = userRepository.findByEmail(req.email)
+            user.password = passwordEncoder.encode(req.newPassword)
+            userRepository.save(user)
             return SaveForgotPasswordResp(true)
         } catch (e: Exception) {
             throw UserException(e.message)
@@ -191,8 +231,8 @@ open class UserService(
     @Throws(UserException::class)
     open fun delete(req: DeleteReq): DeleteResp {
         try {
-            userRepository.deleteUserByUsername(req.user.username)
-            tokenRepository.deleteAllByUserId(req.user.id);
+            userRepository.deleteUserByEmail(req.email)
+            tokenRepository.deleteAllByUserId(req.id)
             return DeleteResp(true)
         } catch (e: Exception) {
             throw UserException(e.message)
@@ -216,6 +256,18 @@ open class UserService(
         }
     }
 
+
+    @Transactional
+    @Throws(UserException::class)
+    open fun findUserIdByEmail(req: FindUserIdByEmailReq): FindUserIdByEmailResp {
+        try {
+            val user = userRepository.findByEmail(req.email)
+            return FindUserIdByEmailResp(user.id)
+        } catch (e: Exception) {
+            throw UserException(e.message)
+        }
+    }
+
     private fun sendEmailToUserWithToken(email: String, emailType: EmailType, token: String) {
         emailApi.sendEmail(
             SendEmailReq(
@@ -225,7 +277,6 @@ open class UserService(
             )
         )
     }
-
 
     private fun saveUserToken(userId: Long, token: String, tokenType: TokenType) {
         val builtToken = Token(
