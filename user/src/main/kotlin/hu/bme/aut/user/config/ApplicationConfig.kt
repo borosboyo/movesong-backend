@@ -18,7 +18,7 @@ open class ApplicationConfig(
     @Bean
     open fun userDetailsService(): UserDetailsService? {
         return UserDetailsService { username ->
-            userRepository.findByEmail(username)
+            userRepository.findByUsername(username)
         }
     }
 
@@ -32,7 +32,7 @@ open class ApplicationConfig(
 
     @Bean
     @Throws(Exception::class)
-    open fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager? {
+    open fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager {
         return config.authenticationManager
     }
 

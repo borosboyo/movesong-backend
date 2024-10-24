@@ -6,6 +6,8 @@ services:
     extra_hosts: [ 'host.docker.internal:host-gateway' ]
     ports:
       - "9411:9411"
+    networks:
+      - local
   config:
     image: borosboyo/config:1.0-SNAPSHOT
     ports:
@@ -15,6 +17,8 @@ services:
       interval: 5s
       timeout: 2s
       retries: 3
+    networks:
+      - local
   discovery:
     image: borosboyo/discovery:1.0-SNAPSHOT
     ports:
@@ -31,71 +35,8 @@ services:
       retries: 3
     environment:
       SPRING_PROFILES_ACTIVE: docker
-  email:
-    image: borosboyo/email:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - zipkin
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-  share:
-    image: borosboyo/share:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - zipkin
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-  subscription:
-    image: borosboyo/subscription:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - zipkin
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-  transform:
-    image: borosboyo/transform:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - zipkin
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-  user:
-    image: borosboyo/user:1.0-SNAPSHOT
-    ports:
-      - "8080"
-    depends_on:
-      discovery:
-        condition: service_healthy
-    links:
-      - config
-      - discovery
-      - zipkin
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - local
   gateway:
     image: borosboyo/gateway:1.0-SNAPSHOT
     ports:
@@ -103,17 +44,111 @@ services:
     depends_on:
       discovery:
         condition: service_healthy
+      config:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: docker
     links:
       - config
       - discovery
       - zipkin
-      - user
-      - email
-      - share
-      - subscription
-      - transform
+    networks:
+      - local
+  email:
+    image: borosboyo/email:1.0-SNAPSHOT
+    ports:
+      - "8081:8081"
+    depends_on:
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+      gateway:
+        condition: service_started
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - local
+  share:
+    image: borosboyo/share:1.0-SNAPSHOT
+    ports:
+      - "8082:8082"
+    depends_on:
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+      gateway:
+        condition: service_started
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - local
+  subscription:
+    image: borosboyo/subscription:1.0-SNAPSHOT
+    ports:
+      - "8083:8083"
+    depends_on:
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+      gateway:
+        condition: service_started
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - local
+  transform:
+    image: borosboyo/transform:1.0-SNAPSHOT
+    ports:
+      - "8084:8084"
+    depends_on:
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+      gateway:
+        condition: service_started
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - local
+  user:
+    image: borosboyo/user:1.0-SNAPSHOT
+    ports:
+      - "8085:8085"
+    depends_on:
+      discovery:
+        condition: service_healthy
+      config:
+        condition: service_healthy
+      gateway:
+        condition: service_started
+    links:
+      - config
+      - discovery
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - local
   postgres:
     image: postgres
     environment:
@@ -121,7 +156,9 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: root
     ports:
-        - "5432:5432"
+      - "5432:5432"
+    networks:
+      - local
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   pgadmin:
@@ -131,10 +168,16 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
+    networks:
+      - local
     depends_on:
-        - postgres
+      - postgres
 # frontend:
 #   image: borosboyo/frontend
 #   ports:
 #     - "5173:5173"
 #   container_name: fronten
+
+networks:
+  local:
+    driver: bridge

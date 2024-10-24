@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.security.Key
+import java.security.SecureRandom
 import java.util.*
 import java.util.function.Function
 
@@ -20,6 +21,10 @@ class JWTUtil {
 
     @Value("\${movesong.jwtExpiration}")
     private lateinit var expiration: String
+
+    private val key: Key by lazy {
+        Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey))
+    }
 
     fun extractUsername(token: String?): String {
         return extractClaim(token) { obj: Claims -> obj.subject }
@@ -44,8 +49,12 @@ class JWTUtil {
             .setSubject(userDetails?.username)
             .setIssuedAt(Date(System.currentTimeMillis()))
             .setExpiration(Date(System.currentTimeMillis() + 1000 * expiration.toLong() * 24))
-            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .signWith(key, SignatureAlgorithm.HS256)
             .compact()
+    }
+
+    fun generateNumericToken(): String {
+        return SecureRandom().nextInt(100000, 999999).toString()
     }
 
     fun isTokenValid(token: String?): Boolean {
@@ -63,14 +72,9 @@ class JWTUtil {
     fun extractAllClaims(token: String?): Claims {
         return Jwts
             .parserBuilder()
-            .setSigningKey(getSignInKey())
+            .setSigningKey(key)
             .build()
             .parseClaimsJws(token)
             .body
-    }
-
-    private fun getSignInKey(): Key? {
-        val keyBytes = Decoders.BASE64.decode(secretKey)
-        return Keys.hmacShaKeyFor(keyBytes)
     }
 }

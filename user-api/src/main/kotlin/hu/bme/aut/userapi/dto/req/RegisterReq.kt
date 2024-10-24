@@ -1,7 +1,9 @@
 package hu.bme.aut.userapi.dto.req
 
-import hu.bme.aut.userapi.dto.UserDto
-
 data class RegisterReq(
-    var user: UserDto
+    val username: String,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val password: String,
 )

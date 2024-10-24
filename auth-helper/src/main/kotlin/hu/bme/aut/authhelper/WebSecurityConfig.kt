@@ -29,6 +29,9 @@ class WebSecurityConfig(
         "/user/forgotPassword",
         "/user/resendForgotPassword",
         "/user/checkForgotPasswordToken",
+        "/user/contact",
+        "/email/sendEmail",
+        "/share/getShareById",
     )
 
     @Bean

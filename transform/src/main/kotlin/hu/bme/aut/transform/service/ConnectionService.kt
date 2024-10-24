@@ -5,7 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import hu.bme.aut.transform.domain.Connection
-import hu.bme.aut.transform.domain.ConnectionType
+import hu.bme.aut.transform.domain.PlatformType
 import hu.bme.aut.transform.repository.ConnectionRepository
 import hu.bme.aut.transformapi.dto.ConnectionDto
 import hu.bme.aut.transformapi.dto.req.ConnectSpotifyAccountReq
@@ -22,7 +22,6 @@ import se.michaelthelin.spotify.SpotifyApi
 import se.michaelthelin.spotify.SpotifyHttpManager
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest
-import java.util.*
 
 
 @Service
@@ -71,7 +70,7 @@ open class ConnectionService(
         connectionRepository.save(
             Connection(
                 movesongEmail = req.movesongEmail,
-                connectionType = ConnectionType.YOUTUBE,
+                platformType = PlatformType.YOUTUBE,
                 accessToken = response.accessToken,
                 refreshToken = response.refreshToken
             )
@@ -99,7 +98,7 @@ open class ConnectionService(
         connectionRepository.save(
             Connection(
                 movesongEmail = req.movesongEmail,
-                connectionType = ConnectionType.SPOTIFY,
+                platformType = PlatformType.SPOTIFY,
                 accessToken = authorizationCodeCredentials.accessToken,
                 refreshToken = authorizationCodeCredentials.refreshToken
             )
@@ -110,7 +109,7 @@ open class ConnectionService(
     @Transactional
     open fun findConnectionsByMovesongEmail(req: FindConnectionsByMovesongEmailReq): FindConnectionsByMovesongEmailResp {
         val connections = connectionRepository.findAllByMovesongEmail(req.movesongEmail)
-        val connectionsDto = connections.map { connection -> ConnectionDto(connection.movesongEmail, connection.connectionType.toString(), connection.accessToken, connection.refreshToken) }
+        val connectionsDto = connections.map { connection -> ConnectionDto(connection.movesongEmail, connection.platformType.toString(), connection.accessToken, connection.refreshToken) }
         return FindConnectionsByMovesongEmailResp(connectionsDto)
     }
 

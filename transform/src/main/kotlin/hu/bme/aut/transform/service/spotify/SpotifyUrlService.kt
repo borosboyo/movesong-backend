@@ -1,6 +1,6 @@
 package hu.bme.aut.transform.service.spotify
 
-import hu.bme.aut.transform.domain.ConnectionType
+import hu.bme.aut.transform.domain.PlatformType
 import hu.bme.aut.transform.repository.ConnectionRepository
 import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
@@ -22,9 +22,9 @@ open class SpotifyUrlService(
 
     @Transactional
     open fun initSpotifyApi(movesongEmail: String): SpotifyApi {
-        val connection = connectionRepository.findByMovesongEmailAndConnectionType(
+        val connection = connectionRepository.findByMovesongEmailAndPlatformType(
             movesongEmail,
-            ConnectionType.SPOTIFY
+            PlatformType.SPOTIFY
         )
 
         val spotifyApi = SpotifyApi.Builder()

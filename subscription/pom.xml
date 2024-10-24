@@ -127,6 +127,58 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>com.github.kongchen</groupId>
+                <artifactId>swagger-maven-plugin</artifactId>
+                <version>3.1.5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <apiSources>
+                        <apiSource>
+                            <springmvc>true</springmvc>
+                            <locations>
+                                <location>hu.bme.aut.subscriptionapi.api</location>
+                                <location>hu.bme.aut.subscriptionapi.dto</location>
+                            </locations>
+                            <info>
+                                <title>REST API SPEC FOR MOVESONG FRONTEND</title>
+                                <description>REST API SPEC FOR MOVESONG FRONTEND</description>
+                                <version>v1</version>
+                            </info>
+                            <schemes>http</schemes>
+                            <host>localhost:8060</host>
+                            <basePath>/subscription</basePath>
+                            <swaggerDirectory>${project.basedir}/src/main/resources/swagger-ui</swaggerDirectory>
+                        </apiSource>
+                    </apiSources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.swagger.codegen.v3</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>3.0.41</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/swagger-ui/swagger.json</inputSpec>
+                            <language>typescript-axios</language>
+                            <output>${project.parent.basedir}/../movesong-frontend/src/swagger/subscription</output>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.11</version>

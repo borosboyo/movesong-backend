@@ -9,10 +9,10 @@ import hu.bme.aut.user.domain.User
 import hu.bme.aut.user.domain.token.Token
 import hu.bme.aut.user.domain.token.TokenType
 import hu.bme.aut.user.repository.ContactRepository
-import hu.bme.aut.userapi.dto.exception.UserException
 import hu.bme.aut.user.repository.TokenRepository
 import hu.bme.aut.user.repository.UserRepository
 import hu.bme.aut.userapi.dto.*
+import hu.bme.aut.userapi.dto.exception.UserException
 import hu.bme.aut.userapi.dto.req.*
 import hu.bme.aut.userapi.dto.resp.*
 import jakarta.transaction.Transactional
@@ -40,39 +40,51 @@ open class UserService(
     private val contactRepository: ContactRepository
 ) {
 
-    private final val USER_NOT_FOUND = "User not found!"
+    private val userNotFound = "User not found!"
 
     @Transactional
     @Throws(UserException::class)
     open fun register(req: RegisterReq): RegisterResp {
-        if (!UserServiceUtil.isUsernameValid(req.user.username)
-            || !UserServiceUtil.isEmailValid(req.user.email)
-            || !UserServiceUtil.isPasswordValid(req.user.password)
+        if (!UserServiceUtil.isUsernameValid(req.username)
+            || !UserServiceUtil.isEmailValid(req.email)
+            || !UserServiceUtil.isPasswordValid(req.password)
         ) {
             throw UserException("There is an error in the conditions of the registration fields!")
         }
-        if (userRepository.existsByUsername(req.user.username)) {
+        if (userRepository.existsByUsername(req.username)) {
             throw UserException("Error: Username is already taken!")
         }
-        if (userRepository.existsByEmail(req.user.email)) {
+        if (userRepository.existsByEmail(req.email)) {
             throw UserException("Error: Email is already taken!")
         }
-        val user = User.fromDto(req.user)
+        val user = User(
+            username = req.username,
+            firstName = req.firstName,
+            lastName = req.lastName,
+            email = req.email,
+            password = req.password
+        )
         user.password = passwordEncoder.encode(user.password)
-        val verificationToken: String = jwtUtil.generateToken(user)
-        saveUserToken(user.id, verificationToken, TokenType.VERIFICATION)
+        val savedUser = userRepository.save(user)
+        val verificationToken: String = jwtUtil.generateNumericToken()
+        saveUserToken(savedUser.id, verificationToken, TokenType.VERIFICATION)
 
+        LOGGER.info("User registered: ${verificationToken}")
         sendEmailToUserWithToken(user.getEmail(), EmailType.CONFIRM_REGISTRATION, verificationToken)
 
-        return RegisterResp(User.toDto(userRepository.save(user)))
+        return RegisterResp(
+            email = savedUser.getEmail(),
+            username = savedUser.username,
+            success = true
+        )
     }
 
     @Transactional
     @Throws(UserException::class)
     open fun login(req: LoginReq): LoginResp {
-        var username = ""
+        var username = req.usernameOrEmail
 
-        if (userRepository.existsByEmail(req.usernameOrEmail) && !userRepository.existsByUsername(req.usernameOrEmail)) {
+        if (userRepository.existsByEmail(req.usernameOrEmail)) {
             username = userRepository.findByEmail(req.usernameOrEmail).username
         }
 
@@ -112,10 +124,8 @@ open class UserService(
             val token: Token = tokenRepository.findByToken(req.token.trim())
             val user = userRepository.findById(token.userId)
             user.get().enabled = true
-            val savedUserEntity = userRepository.save(user.get())
-            val jwtToken: String = jwtUtil.generateToken(savedUserEntity)
-            saveUserToken(savedUserEntity.id, jwtToken, TokenType.BEARER)
-            return EnableResp(jwtToken)
+            userRepository.save(user.get())
+            return EnableResp(true)
         } catch (e: Exception) {
             throw UserException(e.message)
         }
@@ -129,12 +139,13 @@ open class UserService(
             if (user.enabled) {
                 throw UserException("User is already enabled!")
             }
-            val verificationToken: String = jwtUtil.generateToken(user)
+            val verificationToken: String = jwtUtil.generateNumericToken()
             saveUserToken(user.id, verificationToken, TokenType.VERIFICATION)
+            LOGGER.info("User registered: ${verificationToken}")
             sendEmailToUserWithToken(user.getEmail(), EmailType.CONFIRM_REGISTRATION, verificationToken)
             return ResendEnableResp(true)
         } else {
-            throw UserException(USER_NOT_FOUND)
+            throw UserException(userNotFound)
         }
     }
 
@@ -164,12 +175,13 @@ open class UserService(
     open fun forgotPassword(req: ForgotPasswordReq): ForgotPasswordResp {
         if (userRepository.existsByEmail(req.email)) {
             val user = userRepository.findByEmail(req.email)
-            val resetPasswordToken: String = jwtUtil.generateToken(user)
+            val resetPasswordToken: String = jwtUtil.generateNumericToken()
             saveUserToken(user.id, resetPasswordToken, TokenType.RESET_PASSWORD)
+            LOGGER.info("User forgot password: ${resetPasswordToken}")
             sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
             return ForgotPasswordResp(true)
         } else {
-            throw UserException(USER_NOT_FOUND)
+            throw UserException(userNotFound)
         }
     }
 
@@ -178,8 +190,9 @@ open class UserService(
     open fun resendForgotPassword(req: ResendForgotPasswordReq): ResendForgotPasswordResp {
         if (userRepository.existsByEmail(req.email)) {
             val user = userRepository.findByEmail(req.email)
-            val resetPasswordToken: String = jwtUtil.generateToken(user)
+            val resetPasswordToken: String = jwtUtil.generateNumericToken()
             saveUserToken(user.id, resetPasswordToken, TokenType.RESET_PASSWORD)
+            LOGGER.info("User forgot password: ${resetPasswordToken}")
             sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
             return ResendForgotPasswordResp(true)
         } else {
@@ -250,12 +263,12 @@ open class UserService(
                 message = req.message
             )
             contactRepository.save(help)
+            sendContactEmail(req.email, EmailType.CONTACT, req.message)
             return ContactResp(true)
         } catch (e: Exception) {
             throw UserException(e.message)
         }
     }
-
 
     @Transactional
     @Throws(UserException::class)
@@ -269,6 +282,16 @@ open class UserService(
     }
 
     private fun sendEmailToUserWithToken(email: String, emailType: EmailType, token: String) {
+        emailApi.sendEmail(
+            SendEmailReq(
+                userEmail = email,
+                emailType = emailType,
+                token = token
+            )
+        )
+    }
+
+    private fun sendContactEmail(email: String, emailType: EmailType, token: String) {
         emailApi.sendEmail(
             SendEmailReq(
                 userEmail = email,

@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 
-@FeignClient(name = "email")
+@FeignClient(name = "email", url = "http://email:8081/email")
 @Api(tags = ["email"], value = "Email controller to handle all email related requests")
 fun interface EmailApi {
     @PostMapping("/sendEmail")

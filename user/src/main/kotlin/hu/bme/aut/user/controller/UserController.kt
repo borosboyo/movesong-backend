@@ -16,44 +16,48 @@ class UserController(
     private val userService: UserService
 ) : UserApi {
 
-    override fun register(@RequestBody authRequest: RegisterReq): ResponseEntity<RegisterResp> {
-        return ResponseEntity.ok(userService.register(authRequest))
+    override fun register(@RequestBody req: RegisterReq): ResponseEntity<RegisterResp> {
+        return ResponseEntity.ok(userService.register(req))
     }
 
-    override fun login(@RequestBody authRequest: LoginReq): ResponseEntity<LoginResp> {
-        return ResponseEntity.ok(userService.login(authRequest))
+    override fun login(@RequestBody req: LoginReq): ResponseEntity<LoginResp> {
+        return ResponseEntity.ok(userService.login(req))
     }
 
-    override fun enable(enableReq: EnableReq): ResponseEntity<EnableResp> {
-        return ResponseEntity.ok(userService.enable(enableReq))
+    override fun enable(req: EnableReq): ResponseEntity<EnableResp> {
+        return ResponseEntity.ok(userService.enable(req))
     }
 
-    override fun resendEnable(resendEnableReq: ResendEnableReq): ResponseEntity<ResendEnableResp> {
-        return ResponseEntity.ok(userService.resendEnable(resendEnableReq))
+    override fun resendEnable(req: ResendEnableReq): ResponseEntity<ResendEnableResp> {
+        return ResponseEntity.ok(userService.resendEnable(req))
     }
 
-    override fun updatePassword(updateReq: UpdatePasswordReq): ResponseEntity<UpdatePasswordResp> {
-        return ResponseEntity.ok(userService.updatePassword(updateReq))
+    override fun updatePassword(req: UpdatePasswordReq): ResponseEntity<UpdatePasswordResp> {
+        return ResponseEntity.ok(userService.updatePassword(req))
     }
 
-    override fun forgotPassword(forgotReq: ForgotPasswordReq): ResponseEntity<ForgotPasswordResp> {
-        return ResponseEntity.ok(userService.forgotPassword(forgotReq))
+    override fun forgotPassword(req: ForgotPasswordReq): ResponseEntity<ForgotPasswordResp> {
+        return ResponseEntity.ok(userService.forgotPassword(req))
     }
 
-    override fun resendForgotPassword(resendForgotReq: ResendForgotPasswordReq): ResponseEntity<ResendForgotPasswordResp> {
-        return ResponseEntity.ok(userService.resendForgotPassword(resendForgotReq))
+    override fun resendForgotPassword(req: ResendForgotPasswordReq): ResponseEntity<ResendForgotPasswordResp> {
+        return ResponseEntity.ok(userService.resendForgotPassword(req))
     }
 
-    override fun saveForgotPassword(saveForgotReq: SaveForgotPasswordReq): ResponseEntity<SaveForgotPasswordResp> {
-        return ResponseEntity.ok(userService.saveForgotPassword(saveForgotReq))
+    override fun checkForgotPasswordToken(req: CheckForgotPasswordTokenReq): ResponseEntity<CheckForgotPasswordTokenResp> {
+        return ResponseEntity.ok(userService.checkForgotPasswordToken(req))
     }
 
-    override fun delete(deleteReq: DeleteReq): ResponseEntity<DeleteResp> {
-        return ResponseEntity.ok(userService.delete(deleteReq))
+    override fun saveForgotPassword(req: SaveForgotPasswordReq): ResponseEntity<SaveForgotPasswordResp> {
+        return ResponseEntity.ok(userService.saveForgotPassword(req))
     }
 
-    override fun contact(contactReq: ContactReq): ResponseEntity<ContactResp> {
-        return ResponseEntity.ok(userService.contact(contactReq))
+    override fun delete(req: DeleteReq): ResponseEntity<DeleteResp> {
+        return ResponseEntity.ok(userService.delete(req))
+    }
+
+    override fun contact(req: ContactReq): ResponseEntity<ContactResp> {
+        return ResponseEntity.ok(userService.contact(req))
     }
 
     override fun findUserIdByEmail(req: FindUserIdByEmailReq): ResponseEntity<FindUserIdByEmailResp> {

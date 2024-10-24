@@ -2,10 +2,11 @@ package hu.bme.aut.transform.service.youtube
 
 import com.google.api.services.youtube.model.Playlist
 import com.google.api.services.youtube.model.PlaylistItem
-import hu.bme.aut.transform.domain.Connection
-import hu.bme.aut.transform.domain.ConnectionType
-import hu.bme.aut.transform.domain.TrackModel
+import hu.bme.aut.transform.domain.PlatformType
+import hu.bme.aut.transform.domain.TransformTrackModel
+import hu.bme.aut.transform.domain.Transform
 import hu.bme.aut.transform.repository.ConnectionRepository
+import hu.bme.aut.transform.repository.TransformRepository
 import hu.bme.aut.transform.service.spotify.*
 import hu.bme.aut.transformapi.dto.req.ConvertToSpotifyReq
 import hu.bme.aut.transformapi.dto.resp.ConvertToSpotifyResp
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service
 import se.michaelthelin.spotify.SpotifyApi
 import se.michaelthelin.spotify.model_objects.specification.Track
 import java.io.IOException
+import java.time.LocalDate
 
 @Service
 open class YoutubeToSpotifyService(
@@ -22,20 +24,22 @@ open class YoutubeToSpotifyService(
     private val spotifySearchTrackService: SpotifySearchTrackService,
     private val spotifyInsertTracksPlaylistService: SpotifyInsertTracksPlaylistService,
     private val youtubeUserPlaylistService: YoutubeUserPlaylistService,
-    private val connectionRepository: ConnectionRepository
+    private val connectionRepository: ConnectionRepository,
+    private val transformRepository: TransformRepository
 ) {
     @Transactional
     @Throws(IOException::class)
     open fun convertToSpotify(req: ConvertToSpotifyReq): ConvertToSpotifyResp {
         val spotifyApi = spotifyUrlService.initSpotifyApi(req.movesongEmail)
-        val connection = connectionRepository.findByMovesongEmailAndConnectionType(
+        val connection = connectionRepository.findByMovesongEmailAndPlatformType(
             req.movesongEmail,
-            ConnectionType.YOUTUBE
+            PlatformType.YOUTUBE
         )
         var spotifyPlaylist: se.michaelthelin.spotify.model_objects.specification.Playlist? = null
-
+        var youtubePlaylist: Playlist? = null
         for (p in youtubeUserPlaylistService.getPlaylists(connection)) {
             if (req.playlistId == p.id) {
+                youtubePlaylist = p
                 spotifyPlaylist = spotifyCreatePlaylistService.createPlaylist(
                     p.snippet.title,
                     "Created by Movesong",
@@ -62,11 +66,22 @@ open class YoutubeToSpotifyService(
             }
         } while (!lastPage)
 
-        println("UrisList Size: " + spotifyUrisToBeAdded.size)
         val urisToBeAdded = spotifyUrisToBeAdded.toTypedArray<String>()
         spotifyInsertTracksPlaylistService.insertItemsInPlaylist(spotifyPlaylist!!.id, urisToBeAdded, spotifyApi)
-
-        return ConvertToSpotifyResp(true)
+        transformRepository.save(
+            Transform(
+                originPlatform = PlatformType.YOUTUBE,
+                destinationPlatform = PlatformType.SPOTIFY,
+                playlistName = spotifyPlaylist.name,
+                originPlaylistId = req.playlistId,
+                destinationPlaylistId = spotifyPlaylist.id,
+                movesongEmail = req.movesongEmail,
+                itemCount = spotifyUrisToBeAdded.size,
+                thumbnailUrl = youtubePlaylist!!.snippet.thumbnails.default.url,
+                date = LocalDate.now()
+            )
+        )
+        return ConvertToSpotifyResp(true, spotifyPlaylist.id)
     }
 
     private fun convertSpotifyTrack(playlistItemList: List<PlaylistItem?>, spotifyApi: SpotifyApi): ArrayList<String> {
@@ -81,7 +96,7 @@ open class YoutubeToSpotifyService(
                 )
 
             if (track.isNotEmpty()) {
-                val newTrack = TrackModel(
+                val newTrack = TransformTrackModel(
                     youtubeUserPlaylistService.getYoutubeTrackName(playlistItem),
                     track[0].name
                 )
