@@ -24,20 +24,17 @@
     </properties>
 
     <modules>
-        <module>auth-helper</module>
         <module>discovery</module>
         <module>config</module>
+        <module>employee</module>
+        <module>department</module>
+        <module>organization</module>
         <module>gateway</module>
-        <module>email</module>
-        <module>email-api</module>
         <module>user</module>
-        <module>user-api</module>
         <module>share</module>
-        <module>share-api</module>
         <module>transform</module>
-        <module>transform-api</module>
         <module>subscription</module>
-        <module>subscription-api</module>
+        <module>email</module>
     </modules>
 
     <dependencyManagement>

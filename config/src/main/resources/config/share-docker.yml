@@ -50,7 +50,7 @@ management:
 
 db:
   name: movesong-share
-  host: postgres
+  host: localhost
   port: 5432
   username: root
   password: root

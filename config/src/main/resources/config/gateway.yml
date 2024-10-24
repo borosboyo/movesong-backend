@@ -9,9 +9,6 @@ eureka:
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
-  level:
-    root: DEBUG
-    org.springframework.cloud.netflix.eureka: DEBUG
 
 spring:
   output:
@@ -102,7 +99,3 @@ management:
   tracing:
     sampling:
       probability: 1.0
-
-movesong:
-  jwtSecret: ${MOVESONG_JWT_SECRET}
-  jwtExpiration: ${MOVESONG_JWT_EXPIRATION}
