@@ -39,18 +39,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         ddl-auto: update
     generate-ddl: true
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${movesong.mailer.username}
-    password: ${movesong.mailer.password}
-    properties:
-      mail:
-        smtp:
-          auth: false
-          starttls:
-            enable: false
-            required: false
 
 management:
   tracing:
@@ -59,11 +47,7 @@ management:
 
 db:
   name: movesong-email
-  host: postgres
+  host: localhost
   port: 5432
   username: root
   password: root
-
-movesong:
-  mail:
-    from: "asd@asd.com"

@@ -47,7 +47,7 @@ management:
 
 db:
   name: movesong-subscription
-  host: postgres
+  host: localhost
   port: 5432
   username: root
   password: root
