@@ -12,9 +12,12 @@ open class RouterValidator {
             "/user/enable",
             "/user/resendEnable",
             "/user/login",
+            "/user/contact",
             "/user/forgotPassword",
             "/user/resendForgotPassword",
             "/user/checkForgotPasswordToken",
+            "/email/sendEmail",
+            "/share/getShareById",
         )
     }
 

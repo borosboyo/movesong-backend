@@ -30,7 +30,7 @@ open class AuthenticationFilter(
             }
             val authHeader = this.getAuthHeader(request)
             val jwt = authHeader.substring(7)
-            if (jwtUtil.isTokenValid(jwt)) {
+            if (!jwtUtil.isTokenValid(jwt)) {
                 return this.onError(exchange, HttpStatus.FORBIDDEN)
             }
 

@@ -13,7 +13,7 @@ import java.io.IOException
 @Service
 open class SpotifyPlaylistTracksService {
     @Transactional
-    open fun getPlaylistTracks(playlistId: String, spotifyApi: SpotifyApi): Array<PlaylistTrack?> {
+    open fun getPlaylistTracks(playlistId: String, spotifyApi: SpotifyApi): Array<PlaylistTrack> {
         val getPlaylistsItemsRequest: GetPlaylistsItemsRequest =
             spotifyApi.getPlaylistsItems(playlistId).build()
         try {

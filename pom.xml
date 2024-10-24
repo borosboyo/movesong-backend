@@ -33,8 +33,11 @@
         <module>user</module>
         <module>user-api</module>
         <module>share</module>
+        <module>share-api</module>
         <module>transform</module>
+        <module>transform-api</module>
         <module>subscription</module>
+        <module>subscription-api</module>
     </modules>
 
     <dependencyManagement>

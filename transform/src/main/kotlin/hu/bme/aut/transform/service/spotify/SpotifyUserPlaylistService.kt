@@ -11,10 +11,10 @@ import se.michaelthelin.spotify.requests.data.playlists.GetListOfCurrentUsersPla
 
 
 @Service
-open class SpotifyUserPlaylistService() {
+open class SpotifyUserPlaylistService {
 
     @Transactional
-    open fun getUserPlaylists(spotifyApi: SpotifyApi): Array<PlaylistSimplified?> {
+    open fun getUserPlaylists(spotifyApi: SpotifyApi): Array<PlaylistSimplified> {
         val getListOfUsersPlaylistsRequest: GetListOfCurrentUsersPlaylistsRequest =
             spotifyApi.listOfCurrentUsersPlaylists
                 .build()

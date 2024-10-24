@@ -15,9 +15,9 @@ open class Connection(
     @Column(name = "movesong_email", nullable = false)
     open var movesongEmail: String,
 
-    @Column(name = "connection_type", nullable = false)
+    @Column(name = "platform_type", nullable = false)
     @Enumerated(EnumType.STRING)
-    open var connectionType: ConnectionType,
+    open var platformType: PlatformType,
 
     @Column(name = "access_token", nullable = false, length = 1024)
     open var accessToken: String,
@@ -28,7 +28,7 @@ open class Connection(
     constructor() : this(
         0,
         "",
-        ConnectionType.YOUTUBE,
+        PlatformType.YOUTUBE,
         "",
         ""
     )

@@ -1,7 +1,7 @@
 package hu.bme.aut.userapi.dto.resp
 
-import hu.bme.aut.userapi.dto.UserDto
-
 data class RegisterResp(
-    var user: UserDto
+    var email: String,
+    var username: String,
+    var success: Boolean = false,
 )
