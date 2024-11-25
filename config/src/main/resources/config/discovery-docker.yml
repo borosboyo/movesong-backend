@@ -19,3 +19,13 @@ management:
   tracing:
     sampling:
       probability: 1.0
+
+logging:
+  level:
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.config: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}config.log

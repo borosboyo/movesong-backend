@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@FeignClient(name = "transform")
+@FeignClient(name = "transform", url = "http://transform:8084/transform")
 @Api(tags = ["transform"], value = "Transform controller to handle all transform related requests")
 interface TransformApi {
     @PostMapping(value = ["/connectYoutubeAccount"])
@@ -92,4 +92,32 @@ interface TransformApi {
     @PostMapping(value = ["/exportSpotifyPlaylistToTXT"])
     @ApiOperation(value = "Export a spotify playlist to a TXT file", response = ByteArray::class, nickname = "exportSpotifyPlaylistToTXT")
     fun exportSpotifyPlaylistToTXT(@RequestBody req: ExportSpotifyPlaylistToFileReq): ResponseEntity<ByteArray>
+
+    @PostMapping(value = ["/createSync"])
+    @ApiOperation(value = "Create a new sync object", response = CreateSyncResp::class, nickname = "createSync")
+    fun createSync(@RequestBody req: CreateSyncReq): ResponseEntity<CreateSyncResp>
+
+    @PostMapping(value = ["/updateSync"])
+    @ApiOperation(value = "Update an existing sync object", response = UpdateSyncResp::class, nickname = "updateSync")
+    fun updateSync(@RequestBody req: UpdateSyncReq): ResponseEntity<UpdateSyncResp>
+
+    @PostMapping(value = ["/deleteSync"])
+    @ApiOperation(value = "Delete a sync object", response = DeleteSyncResp::class, nickname = "deleteSync")
+    fun deleteSync(@RequestBody req: DeleteSyncReq): ResponseEntity<DeleteSyncResp>
+
+    @PostMapping(value = ["/getSyncsByMovesongEmail"])
+    @ApiOperation(value = "Get all sync objects by the user's movesong email", response = GetSyncsByMovesongEmailResp::class, nickname = "getSyncsByMovesongEmail")
+    fun getSyncsByMovesongEmail(@RequestBody req: GetSyncsByMovesongEmailReq): ResponseEntity<GetSyncsByMovesongEmailResp>
+
+    @PostMapping(value = ["/deleteConnectionsByMovesongEmail"])
+    @ApiOperation(value = "Delete all connections by the user's movesong email", response = DeleteConnectionsByMovesongEmailResp::class, nickname = "deleteConnectionsByMovesongEmail")
+    fun deleteConnectionsByMovesongEmail(@RequestBody req: DeleteConnectionsByMovesongEmailReq): ResponseEntity<DeleteConnectionsByMovesongEmailResp>
+
+    @PostMapping(value = ["/deleteTransformsByMovesongEmail"])
+    @ApiOperation(value = "Delete all transformations by the user's movesong email", response = DeleteTransformsByMovesongEmailResp::class, nickname = "deleteTransformsByMovesongEmail")
+    fun deleteTransformsByMovesongEmail(@RequestBody req: DeleteTransformsByMovesongEmailReq): ResponseEntity<DeleteTransformsByMovesongEmailResp>
+
+    @PostMapping(value = ["/deleteSyncsByMovesongEmail"])
+    @ApiOperation(value = "Delete all sync objects by the user's movesong email", response = DeleteSyncsByMovesongEmailResp::class, nickname = "deleteSyncsByMovesongEmail")
+    fun deleteSyncsByMovesongEmail(@RequestBody req: DeleteSyncsByMovesongEmailReq): ResponseEntity<DeleteSyncsByMovesongEmailResp>
 }

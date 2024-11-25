@@ -24,12 +24,8 @@ import hu.bme.aut.subscriptionapi.dto.resp.SaveSubscriptionResp;
 import hu.bme.aut.subscriptionapi.dto.resp.SubscriptionResp;
 import jakarta.transaction.Transactional;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SubscriptionService {
@@ -37,7 +33,6 @@ public class SubscriptionService {
     private final CustomerStripeRepository customerStripeRepository;
     private final ProductStripeRepository productStripeRepository;
     private final SubscriptionRepository subscriptionRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionService.class);
 
     @Value("${movesong.stripe.secretKey}")
     private String stripeSecretKey;
@@ -94,6 +89,9 @@ public class SubscriptionService {
         SubscriptionListParams params = SubscriptionListParams.builder()
                 .setCustomer(req.getCustomerId())
                 .build();
+        if (Subscription.list(params) == null) {
+            throw new RuntimeException("Subscription not found");
+        }
         SubscriptionEntity subscriptionEntity = getSubscriptionEntity(req, Subscription.list(params).getData().getFirst());
 
         subscriptionRepository.save(subscriptionEntity);
@@ -171,7 +169,8 @@ public class SubscriptionService {
     public CancelSubscriptionResp cancelSubscription(CancelSubscriptionReq req) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         Subscription subscription = Subscription.retrieve(req.getSubscriptionId());
-
+        SubscriptionEntity subscriptionEntity = subscriptionRepository.findBySubscriptionId(req.getSubscriptionId());
+        subscriptionRepository.deleteByUserId(subscriptionEntity.getUserId());
         Subscription deletedSubscription = subscription.cancel();
         return new CancelSubscriptionResp(
                 deletedSubscription.getStatus()
@@ -181,5 +180,4 @@ public class SubscriptionService {
     private PriceData.Recurring.Interval getInterval(String interval) {
         return interval.equals("year") ? PriceData.Recurring.Interval.YEAR : PriceData.Recurring.Interval.MONTH;
     }
-
 }

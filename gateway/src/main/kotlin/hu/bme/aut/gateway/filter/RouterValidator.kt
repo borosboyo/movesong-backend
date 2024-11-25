@@ -16,7 +16,13 @@ open class RouterValidator {
             "/user/forgotPassword",
             "/user/resendForgotPassword",
             "/user/checkForgotPasswordToken",
+            "/user/saveForgotPassword",
             "/email/sendEmail",
+            "/share/deleteShares",
+            "/transform/deleteConnectionsByMovesongEmail",
+            "/transform/deleteTransformsByMovesongEmail",
+            "/transform/deleteSyncsByMovesongEmail",
+            "/subscription/cancelSubscription",
             "/share/getShareById",
         )
     }

@@ -44,11 +44,6 @@ interface UserApi {
     @Throws(UserException::class)
     fun forgotPassword(@RequestBody req: ForgotPasswordReq): ResponseEntity<ForgotPasswordResp>
 
-    @PostMapping(value = ["/resendForgotPassword"])
-    @ApiOperation(value = "Resend the forgot password email to the user", response = ResendForgotPasswordResp::class, nickname = "resendForgotPassword")
-    @Throws(UserException::class)
-    fun resendForgotPassword(@RequestBody req: ResendForgotPasswordReq): ResponseEntity<ResendForgotPasswordResp>
-
     @PostMapping(value = ["/checkForgotPasswordToken"])
     @ApiOperation(value = "Check the forgot password token of the user", response = CheckForgotPasswordTokenResp::class, nickname = "checkForgotPasswordToken")
     @Throws(UserException::class)

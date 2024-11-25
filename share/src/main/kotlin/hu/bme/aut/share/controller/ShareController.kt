@@ -2,14 +2,8 @@ package hu.bme.aut.share.controller
 
 import hu.bme.aut.share.service.ShareService
 import hu.bme.aut.shareapi.api.ShareApi
-import hu.bme.aut.shareapi.dto.req.CreateShareReq
-import hu.bme.aut.shareapi.dto.req.GetShareByIdReq
-import hu.bme.aut.shareapi.dto.req.GetSharesByMovesongEmailReq
-import hu.bme.aut.shareapi.dto.req.UpdateShareReq
-import hu.bme.aut.shareapi.dto.resp.CreateShareResp
-import hu.bme.aut.shareapi.dto.resp.GetShareByIdResp
-import hu.bme.aut.shareapi.dto.resp.GetSharesByMovesongEmailResp
-import hu.bme.aut.shareapi.dto.resp.UpdateShareResp
+import hu.bme.aut.shareapi.dto.req.*
+import hu.bme.aut.shareapi.dto.resp.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -33,5 +27,9 @@ class ShareController(
 
     override fun updateShare(req: UpdateShareReq): ResponseEntity<UpdateShareResp> {
         return ResponseEntity.ok(shareService.updateShare(req))
+    }
+
+    override fun deleteShares(req: DeleteSharesReq): ResponseEntity<DeleteSharesResp> {
+        return ResponseEntity.ok(shareService.deleteShares(req))
     }
 }

@@ -4,6 +4,14 @@ import hu.bme.aut.authhelper.JWTUtil
 import hu.bme.aut.emailapi.api.EmailApi
 import hu.bme.aut.emailapi.dto.EmailType
 import hu.bme.aut.emailapi.dto.SendEmailReq
+import hu.bme.aut.shareapi.api.ShareApi
+import hu.bme.aut.shareapi.dto.req.DeleteSharesReq
+import hu.bme.aut.subscriptionapi.api.SubscriptionApi
+import hu.bme.aut.subscriptionapi.dto.req.CancelSubscriptionReq
+import hu.bme.aut.transformapi.api.TransformApi
+import hu.bme.aut.transformapi.dto.req.DeleteConnectionsByMovesongEmailReq
+import hu.bme.aut.transformapi.dto.req.DeleteSyncsByMovesongEmailReq
+import hu.bme.aut.transformapi.dto.req.DeleteTransformsByMovesongEmailReq
 import hu.bme.aut.user.domain.Contact
 import hu.bme.aut.user.domain.User
 import hu.bme.aut.user.domain.token.Token
@@ -27,13 +35,15 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
-
 @Service
 @Import(JWTUtil::class)
 open class UserService(
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
     private val emailApi: EmailApi,
+    private val shareApi: ShareApi,
+    private val transformApi: TransformApi,
+    private val subscriptionApi: SubscriptionApi,
     private val jwtUtil: JWTUtil,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
@@ -187,21 +197,6 @@ open class UserService(
 
     @Transactional
     @Throws(UserException::class)
-    open fun resendForgotPassword(req: ResendForgotPasswordReq): ResendForgotPasswordResp {
-        if (userRepository.existsByEmail(req.email)) {
-            val user = userRepository.findByEmail(req.email)
-            val resetPasswordToken: String = jwtUtil.generateNumericToken()
-            saveUserToken(user.id, resetPasswordToken, TokenType.RESET_PASSWORD)
-            LOGGER.info("User forgot password: ${resetPasswordToken}")
-            sendEmailToUserWithToken(user.getEmail(), EmailType.RESET_PASSWORD, resetPasswordToken)
-            return ResendForgotPasswordResp(true)
-        } else {
-            throw UserException(userNotFound)
-        }
-    }
-
-    @Transactional
-    @Throws(UserException::class)
     open fun checkForgotPasswordToken(req: CheckForgotPasswordTokenReq): CheckForgotPasswordTokenResp {
         try {
             val token = tokenRepository.findByToken(req.token.trim())
@@ -244,8 +239,19 @@ open class UserService(
     @Throws(UserException::class)
     open fun delete(req: DeleteReq): DeleteResp {
         try {
+            val user = userRepository.findByEmail(req.email)
+            tokenRepository.deleteAllByUserId(user.id)
+            shareApi.deleteShares(DeleteSharesReq(user.getEmail()))
+            transformApi.deleteTransformsByMovesongEmail(DeleteTransformsByMovesongEmailReq(user.getEmail()))
+            transformApi.deleteSyncsByMovesongEmail(DeleteSyncsByMovesongEmailReq(user.getEmail()))
+            transformApi.deleteConnectionsByMovesongEmail(DeleteConnectionsByMovesongEmailReq(user.getEmail()))
+            if (req.subscriptionId != null) {
+                val subscriptionId: String = req.subscriptionId.toString()
+                if(subscriptionId.isNotEmpty()) {
+                    subscriptionApi.cancelSubscription(CancelSubscriptionReq(subscriptionId))
+                }
+            }
             userRepository.deleteUserByEmail(req.email)
-            tokenRepository.deleteAllByUserId(req.id)
             return DeleteResp(true)
         } catch (e: Exception) {
             throw UserException(e.message)

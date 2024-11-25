@@ -23,7 +23,7 @@ open class EmailService(
 ) {
 
     @Value("\${movesong.mail.from}")
-    private lateinit var mailFrom: String
+    lateinit var mailFrom: String
 
     @Transactional
     @Throws(

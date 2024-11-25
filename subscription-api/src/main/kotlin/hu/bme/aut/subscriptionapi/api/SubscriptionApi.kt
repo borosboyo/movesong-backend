@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@FeignClient(name = "subscription")
+@FeignClient(name = "subscription", url = "http://subscription:8083/subscription")
 @Api(tags = ["subscription"], value = "Subscription controller to handle all subscription related requests")
 interface SubscriptionApi {
     @PostMapping(value = ["/subscription"])
