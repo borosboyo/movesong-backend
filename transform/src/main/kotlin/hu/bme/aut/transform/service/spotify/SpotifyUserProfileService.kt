@@ -14,7 +14,6 @@ open class SpotifyUserProfileService {
 
     @Transactional
     open fun getCurrentUserProfile(spotifyApi: SpotifyApi): User? {
-        println("Getting current user profile")
         val getCurrentUsersProfileRequest: GetCurrentUsersProfileRequest =
             spotifyApi.currentUsersProfile.build()
 

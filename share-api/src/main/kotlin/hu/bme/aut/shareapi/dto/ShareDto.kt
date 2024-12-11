@@ -4,7 +4,7 @@ data class ShareDto(
     val id: Long ,
     val playlistId: String,
     val sharedPlaylistName: String,
-    val ownerMovesongEmail: String,
+    val movesongEmail: String,
     val visible: Boolean,
     val views: Int,
     val sharePlatformType: String,

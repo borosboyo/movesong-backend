@@ -7,7 +7,7 @@ data class TransformDto(
     val playlistName: String,
     val originPlaylistId: String,
     val destinationPlaylistId: String,
-    val ownerMovesongEmail: String,
+    val movesongEmail: String,
     val itemCount: Int,
     val thumbnailUrl: String,
     val date: String,

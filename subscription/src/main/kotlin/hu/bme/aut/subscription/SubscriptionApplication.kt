@@ -4,8 +4,12 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Info
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.cloud.openfeign.EnableFeignClients
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
+@EnableScheduling
+@EnableFeignClients(basePackages = ["hu.bme.aut.shareapi.api", "hu.bme.aut.shareapi.dto", "hu.bme.aut.transformapi.api", "hu.bme.aut.transformapi.dto"])
 @OpenAPIDefinition(
     info = Info(
         title = "Subscription API",

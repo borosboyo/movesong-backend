@@ -20,7 +20,7 @@ open class Share (
     open var sharedPlaylistName: String,
 
     @Column(name = "user_id", nullable = false)
-    open var ownerMovesongEmail: String,
+    open var movesongEmail: String,
 
     @Column(name = "visible", nullable = false)
     open var visible: Boolean,
@@ -55,7 +55,7 @@ open class Share (
             id = id,
             playlistId = playlistId,
             sharedPlaylistName = sharedPlaylistName,
-            ownerMovesongEmail = ownerMovesongEmail,
+            movesongEmail = movesongEmail,
             visible = visible,
             views = views,
             sharePlatformType = sharePlatformType.name,
@@ -67,7 +67,7 @@ open class Share (
     fun update(dto: ShareDto){
         this.playlistId = dto.playlistId
         this.sharedPlaylistName = dto.sharedPlaylistName
-        this.ownerMovesongEmail = dto.ownerMovesongEmail
+        this.movesongEmail = dto.movesongEmail
         this.visible = dto.visible
         this.views = dto.views
         this.sharePlatformType = SharePlatformType.valueOf(dto.sharePlatformType)

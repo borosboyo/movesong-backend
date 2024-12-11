@@ -36,6 +36,30 @@
         }
       }
     },
+    "/deleteShares" : {
+      "post" : {
+        "tags" : [ "share" ],
+        "summary" : "Delete a share",
+        "description" : "",
+        "operationId" : "deleteShares",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/DeleteSharesReq"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DeleteSharesResp"
+            }
+          }
+        }
+      }
+    },
     "/getShareById" : {
       "post" : {
         "tags" : [ "share" ],
@@ -126,6 +150,22 @@
         }
       }
     },
+    "DeleteSharesReq" : {
+      "type" : "object",
+      "properties" : {
+        "movesongEmail" : {
+          "type" : "string"
+        }
+      }
+    },
+    "DeleteSharesResp" : {
+      "type" : "object",
+      "properties" : {
+        "success" : {
+          "type" : "boolean"
+        }
+      }
+    },
     "GetShareByIdReq" : {
       "type" : "object",
       "properties" : {
@@ -175,7 +215,7 @@
         "sharedPlaylistName" : {
           "type" : "string"
         },
-        "ownerMovesongEmail" : {
+        "movesongEmail" : {
           "type" : "string"
         },
         "visible" : {
@@ -191,6 +231,9 @@
         "selectedBackgroundId" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "thumbnailUrl" : {
+          "type" : "string"
         }
       }
     },

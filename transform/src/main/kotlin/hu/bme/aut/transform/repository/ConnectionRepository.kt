@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 interface ConnectionRepository: JpaRepository<Connection, Long> {
     fun findAllByMovesongEmail(movesongEmail: String): List<Connection>
     fun findByMovesongEmailAndPlatformType(movesongEmail: String, platformType: PlatformType): Connection
+    fun deleteAllByMovesongEmail(movesongEmail: String)
 }

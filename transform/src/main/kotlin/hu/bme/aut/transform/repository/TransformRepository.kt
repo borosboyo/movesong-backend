@@ -11,4 +11,5 @@ interface TransformRepository: JpaRepository<Transform, Long> {
     fun findAllByOriginPlaylistIdAndDestinationPlaylistId(originPlaylistId: String, destinationPlaylistId: String): List<Transform>
     fun findAllByOriginPlaylistIdAndDestinationPlaylistIdAndMovesongEmail(originPlaylistId: String, destinationPlaylistId: String, movesongEmail: String): List<Transform>
     fun findAllByMovesongEmail(movesongEmail: String): List<Transform>
+    fun deleteAllByMovesongEmail(movesongEmail: String)
 }

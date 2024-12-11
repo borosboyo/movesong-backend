@@ -21,7 +21,7 @@ public class ProductStripeRepository {
         product.setName("Movesong Monthly Subscription");
         product.setId("prod_QuqcwXaww68NTo");
         price.setCurrency("usd");
-        price.setUnitAmountDecimal(BigDecimal.valueOf(1));
+        price.setUnitAmountDecimal(BigDecimal.valueOf(4.99));
         product.setDefaultPriceObject(price);
         products.put(product.getId(), product);
 
@@ -31,7 +31,7 @@ public class ProductStripeRepository {
         product.setName("Movesong Yearly Subscription");
         product.setId("prod_QuqcNVtCp060Lm");
         price.setCurrency("usd");
-        price.setUnitAmountDecimal(BigDecimal.valueOf(1));
+        price.setUnitAmountDecimal(BigDecimal.valueOf(24.99));
         product.setDefaultPriceObject(price);
         products.put(product.getId(), product);
 

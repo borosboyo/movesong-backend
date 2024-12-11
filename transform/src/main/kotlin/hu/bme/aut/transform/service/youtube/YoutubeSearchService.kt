@@ -37,12 +37,9 @@ open class YoutubeSearchService {
             val searchResultList: List<SearchResult> = searchResponse.items
             return searchResultList
         } catch (e: GoogleJsonResponseException) {
-            println(
-                ("There was a service error: " + e.details.code + " : "
-                        + e.details.message)
-            )
+            e.printStackTrace()
         } catch (e: IOException) {
-            println("There was an IO error: " + e.cause + " : " + e.message)
+            e.printStackTrace()
         } catch (t: Throwable) {
             t.printStackTrace()
         }

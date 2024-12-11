@@ -116,5 +116,34 @@ class TransformController(
             contentType = MediaType.TEXT_PLAIN
             setContentDispositionFormData("attachment", "spotify_playlist.txt")
         }
-        return ResponseEntity(transformService.exportSpotifyPlaylistToTXT(req), headers, HttpStatus.OK) }
+        return ResponseEntity(transformService.exportSpotifyPlaylistToTXT(req), headers, HttpStatus.OK)
+    }
+
+    override fun createSync(req: CreateSyncReq): ResponseEntity<CreateSyncResp> {
+        return ResponseEntity.ok(transformService.createSync(req))
+    }
+
+    override fun deleteSync(req: DeleteSyncReq): ResponseEntity<DeleteSyncResp> {
+        return ResponseEntity.ok(transformService.deleteSync(req))
+    }
+
+    override fun updateSync(req: UpdateSyncReq): ResponseEntity<UpdateSyncResp> {
+        return ResponseEntity.ok(transformService.updateSync(req))
+    }
+
+    override fun getSyncsByMovesongEmail(req: GetSyncsByMovesongEmailReq): ResponseEntity<GetSyncsByMovesongEmailResp> {
+        return ResponseEntity.ok(transformService.getSyncsByMovesongEmail(req))
+    }
+
+    override fun deleteConnectionsByMovesongEmail(req: DeleteConnectionsByMovesongEmailReq): ResponseEntity<DeleteConnectionsByMovesongEmailResp> {
+        return ResponseEntity.ok(connectionService.deleteConnectionsByMovesongEmail(req))
+    }
+
+    override fun deleteTransformsByMovesongEmail(req: DeleteTransformsByMovesongEmailReq): ResponseEntity<DeleteTransformsByMovesongEmailResp> {
+        return ResponseEntity.ok(transformService.deleteTransformsByMovesongEmail(req))
+    }
+
+    override fun deleteSyncsByMovesongEmail(req: DeleteSyncsByMovesongEmailReq): ResponseEntity<DeleteSyncsByMovesongEmailResp> {
+        return ResponseEntity.ok(transformService.deleteSyncsByMovesongEmail(req))
+    }
 }

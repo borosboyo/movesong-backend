@@ -52,15 +52,11 @@ open class YoutubeInsertItemInPlaylistService(
             ).setApplicationName("Movesong").build()
 
             val playlistItem = insertPlaylistItem(playlistId, videoId)
-            println(playlistItem)
         } catch (e: GoogleJsonResponseException) {
-            println("There was a service error: " + e.details.code + " : " + e.details.message)
             e.printStackTrace()
         } catch (e: IOException) {
-            println("IOException: " + e.message)
             e.printStackTrace()
         } catch (t: Throwable) {
-            println("Throwable: " + t.message)
             t.printStackTrace()
         }
     }

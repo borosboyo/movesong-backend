@@ -65,7 +65,7 @@ open class Transform(
             playlistName = playlistName,
             originPlaylistId = originPlaylistId,
             destinationPlaylistId = destinationPlaylistId,
-            ownerMovesongEmail = movesongEmail,
+            movesongEmail = movesongEmail,
             itemCount = itemCount,
             thumbnailUrl = thumbnailUrl,
             date = date.toString()

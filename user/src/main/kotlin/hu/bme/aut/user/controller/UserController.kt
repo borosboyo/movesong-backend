@@ -40,10 +40,6 @@ class UserController(
         return ResponseEntity.ok(userService.forgotPassword(req))
     }
 
-    override fun resendForgotPassword(req: ResendForgotPasswordReq): ResponseEntity<ResendForgotPasswordResp> {
-        return ResponseEntity.ok(userService.resendForgotPassword(req))
-    }
-
     override fun checkForgotPasswordToken(req: CheckForgotPasswordTokenReq): ResponseEntity<CheckForgotPasswordTokenResp> {
         return ResponseEntity.ok(userService.checkForgotPasswordToken(req))
     }
