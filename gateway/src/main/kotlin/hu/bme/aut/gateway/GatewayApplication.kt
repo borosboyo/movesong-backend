@@ -12,8 +12,10 @@ import org.springframework.cloud.gateway.route.RouteDefinition
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
+@EnableScheduling
 @EnableDiscoveryClient
 @Import(
     WebSecurityConfig::class, CORSFilter::class

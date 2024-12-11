@@ -9,6 +9,15 @@ eureka:
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+  level:
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.email: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}email.log
+
 
 springdoc:
   packagesToScan: hu.bme.aut.email
@@ -40,10 +49,10 @@ spring:
         ddl-auto: update
     generate-ddl: true
   mail:
-    host: smtp.gmail.com
+    host: sandbox.smtp.mailtrap.io
     port: 587
-    username: ${movesong.mailer.username}
-    password: ${movesong.mailer.password}
+    username: MUST_BE_SPECIFIED
+    password: MUST_BE_SPECIFIED
     properties:
       mail:
         smtp:
@@ -66,4 +75,4 @@ db:
 
 movesong:
   mail:
-    from: "asd@asd.com"
+    from: "movesong@info.com"

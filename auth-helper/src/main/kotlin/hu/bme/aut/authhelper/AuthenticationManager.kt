@@ -16,13 +16,11 @@ class AuthenticationManager(
 
     override fun authenticate(authentication: Authentication): Mono<Authentication> {
         val authToken = authentication.credentials.toString()
-        println("TOKEN:" + authToken)
         try {
             if (!jwtUtil.isTokenValid(authToken)) {
                 return Mono.empty()
             }
             val username = jwtUtil.extractUsername(authToken)
-            println("USER NAME: " + username)
             return Mono.just(
                 UsernamePasswordAuthenticationToken(
                     username,

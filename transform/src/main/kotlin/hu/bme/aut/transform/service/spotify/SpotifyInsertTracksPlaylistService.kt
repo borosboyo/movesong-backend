@@ -19,6 +19,9 @@ open class SpotifyInsertTracksPlaylistService {
     open fun insertItemsInPlaylist(playlistId: String, urisToBeAdded: Array<String>, spotifyApi: SpotifyApi) {
         var urisList: List<String> = ArrayList(urisToBeAdded.asList())
         var under100 = false
+        if (urisToBeAdded.any { it.isBlank() || !it.startsWith("spotify:track:") }) {
+            throw IllegalArgumentException("Invalid Spotify URIs detected: ${urisToBeAdded.contentToString()}")
+        }
         do {
             var uriArrayList: ArrayList<String>?
             if (urisList.isNotEmpty()) {
@@ -32,7 +35,6 @@ open class SpotifyInsertTracksPlaylistService {
                 val gson = Gson()
                 val data: String = gson.toJson(uriArrayList)
                 val urisJson: JsonArray = JsonParser.parseString(data).asJsonArray
-
                 val addItemsToPlaylistRequest: AddItemsToPlaylistRequest = spotifyApi
                     .addItemsToPlaylist(playlistId, urisJson).build()
                 try {

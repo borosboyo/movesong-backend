@@ -9,6 +9,8 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.SubscriptionListParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.LineItem.PriceData;
+import hu.bme.aut.shareapi.api.ShareApi;
+import hu.bme.aut.shareapi.dto.req.DeleteSharesReq;
 import hu.bme.aut.subscription.domain.SubscriptionEntity;
 import hu.bme.aut.subscription.repository.CustomerStripeRepository;
 import hu.bme.aut.subscription.repository.ProductStripeRepository;
@@ -22,14 +24,14 @@ import hu.bme.aut.subscriptionapi.dto.resp.CancelSubscriptionResp;
 import hu.bme.aut.subscriptionapi.dto.resp.FindSubscriptionResp;
 import hu.bme.aut.subscriptionapi.dto.resp.SaveSubscriptionResp;
 import hu.bme.aut.subscriptionapi.dto.resp.SubscriptionResp;
+import hu.bme.aut.transformapi.api.TransformApi;
+import hu.bme.aut.transformapi.dto.req.DeleteSyncReq;
+import hu.bme.aut.transformapi.dto.req.DeleteSyncsByMovesongEmailReq;
 import jakarta.transaction.Transactional;
+import org.hibernate.sql.Delete;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SubscriptionService {
@@ -37,7 +39,8 @@ public class SubscriptionService {
     private final CustomerStripeRepository customerStripeRepository;
     private final ProductStripeRepository productStripeRepository;
     private final SubscriptionRepository subscriptionRepository;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionService.class);
+    private final ShareApi shareApi;
+    private final TransformApi transformApi;
 
     @Value("${movesong.stripe.secretKey}")
     private String stripeSecretKey;
@@ -45,10 +48,12 @@ public class SubscriptionService {
     @Value("${movesong.clientBaseUrl}")
     private String clientBaseUrl;
 
-    public SubscriptionService(CustomerStripeRepository customerStripeRepository, ProductStripeRepository productStripeRepository, SubscriptionRepository subscriptionRepository) {
+    public SubscriptionService(CustomerStripeRepository customerStripeRepository, ProductStripeRepository productStripeRepository, SubscriptionRepository subscriptionRepository, ShareApi shareApi, TransformApi transformApi) {
         this.customerStripeRepository = customerStripeRepository;
         this.productStripeRepository = productStripeRepository;
         this.subscriptionRepository = subscriptionRepository;
+        this.shareApi = shareApi;
+        this.transformApi = transformApi;
     }
 
     @Transactional
@@ -94,6 +99,9 @@ public class SubscriptionService {
         SubscriptionListParams params = SubscriptionListParams.builder()
                 .setCustomer(req.getCustomerId())
                 .build();
+        if (Subscription.list(params) == null) {
+            throw new RuntimeException("Subscription not found");
+        }
         SubscriptionEntity subscriptionEntity = getSubscriptionEntity(req, Subscription.list(params).getData().getFirst());
 
         subscriptionRepository.save(subscriptionEntity);
@@ -129,9 +137,11 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public FindSubscriptionResp findSubscription(FindSubscriptionReq req){
+    public FindSubscriptionResp findSubscription(FindSubscriptionReq req) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         SubscriptionEntity subscriptionEntity = subscriptionRepository.findBySubscriptionId(req.getSubscriptionId());
+
+        subscriptionEntity = checkCurrentPeriodEndChange(subscriptionEntity);
 
         return new FindSubscriptionResp(
                 subscriptionEntity.getUserId(),
@@ -147,12 +157,15 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public FindSubscriptionResp findSubscriptionByUserEmail(FindSubscriptionByUserEmailReq req){
+    public FindSubscriptionResp findSubscriptionByUserEmail(FindSubscriptionByUserEmailReq req) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         SubscriptionEntity subscriptionEntity = subscriptionRepository.findByUserEmail(req.getUserEmail());
         if(subscriptionEntity == null){
             return null;
         }
+
+        subscriptionEntity = checkCurrentPeriodEndChange(subscriptionEntity);
+
         return new FindSubscriptionResp(
                 subscriptionEntity.getUserId(),
                 subscriptionEntity.getCustomerId(),
@@ -164,6 +177,15 @@ public class SubscriptionService {
                 subscriptionEntity.getPrice(),
                 subscriptionEntity.getInterval()
         );
+    }
+
+    private SubscriptionEntity checkCurrentPeriodEndChange(SubscriptionEntity subscriptionEntity) throws StripeException {
+        Subscription subscription = Subscription.retrieve(subscriptionEntity.getSubscriptionId());
+        if (subscriptionEntity.getCurrentPeriodEnd() != subscription.getCurrentPeriodEnd()) {
+            subscriptionEntity.setCurrentPeriodEnd(subscription.getCurrentPeriodEnd());
+            return subscriptionRepository.save(subscriptionEntity);
+        }
+        return subscriptionEntity;
     }
 
 
@@ -171,7 +193,14 @@ public class SubscriptionService {
     public CancelSubscriptionResp cancelSubscription(CancelSubscriptionReq req) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         Subscription subscription = Subscription.retrieve(req.getSubscriptionId());
-
+        SubscriptionEntity subscriptionEntity = subscriptionRepository.findBySubscriptionId(req.getSubscriptionId());
+        subscriptionRepository.deleteByUserId(subscriptionEntity.getUserId());
+        shareApi.deleteShares(
+                new DeleteSharesReq(subscriptionEntity.getUserEmail())
+        );
+        transformApi.deleteSyncsByMovesongEmail(
+                new DeleteSyncsByMovesongEmailReq(subscriptionEntity.getUserEmail())
+        );
         Subscription deletedSubscription = subscription.cancel();
         return new CancelSubscriptionResp(
                 deletedSubscription.getStatus()
@@ -181,5 +210,4 @@ public class SubscriptionService {
     private PriceData.Recurring.Interval getInterval(String interval) {
         return interval.equals("year") ? PriceData.Recurring.Interval.YEAR : PriceData.Recurring.Interval.MONTH;
     }
-
 }

@@ -48,19 +48,15 @@ open class YoutubeCreatePlaylistService(
             ).setApplicationName("Movesong").build()
 
             val playlistId = insertPlaylist(title, description)
-            println(playlistId)
             playlistId
 
         } catch (e: GoogleJsonResponseException) {
-            println("There was a service error: ${e.details.code} : ${e.details.message}")
             e.printStackTrace()
             null
         } catch (e: IOException) {
-            println("IOException: ${e.message}")
             e.printStackTrace()
             null
         } catch (t: Throwable) {
-            println("Throwable: ${t.message}")
             t.printStackTrace()
             null
         }

@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ShareRepository: JpaRepository<Share, Long>{
-    fun findAllByOwnerMovesongEmail(movesongEmail: String): List<Share>
+    fun findAllBymovesongEmail(movesongEmail: String): List<Share>
+    fun deleteAllByMovesongEmail(movesongEmail: String)
 }

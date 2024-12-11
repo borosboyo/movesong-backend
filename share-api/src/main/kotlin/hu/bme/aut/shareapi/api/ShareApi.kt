@@ -1,13 +1,7 @@
 package hu.bme.aut.shareapi.api
 
-import hu.bme.aut.shareapi.dto.req.CreateShareReq
-import hu.bme.aut.shareapi.dto.req.GetShareByIdReq
-import hu.bme.aut.shareapi.dto.req.GetSharesByMovesongEmailReq
-import hu.bme.aut.shareapi.dto.req.UpdateShareReq
-import hu.bme.aut.shareapi.dto.resp.CreateShareResp
-import hu.bme.aut.shareapi.dto.resp.GetShareByIdResp
-import hu.bme.aut.shareapi.dto.resp.GetSharesByMovesongEmailResp
-import hu.bme.aut.shareapi.dto.resp.UpdateShareResp
+import hu.bme.aut.shareapi.dto.req.*
+import hu.bme.aut.shareapi.dto.resp.*
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.cloud.openfeign.FeignClient
@@ -15,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
-@FeignClient(name = "share")
+@FeignClient(name = "share", url = "http://share:8082/share")
 @Api(tags = ["share"], value = "Share controller to handle all share related requests")
 interface ShareApi {
     @PostMapping(value = ["/createShare"])
@@ -33,4 +27,8 @@ interface ShareApi {
     @PostMapping(value = ["/updateShare"])
     @ApiOperation(value = "Update a share", response = UpdateShareResp::class, nickname = "updateShare")
     fun updateShare(@RequestBody req: UpdateShareReq): ResponseEntity<UpdateShareResp>
+
+    @PostMapping(value = ["/deleteShares"])
+    @ApiOperation(value = "Delete a share", response = DeleteSharesResp::class, nickname = "deleteShares")
+    fun deleteShares(@RequestBody req: DeleteSharesReq): ResponseEntity<DeleteSharesResp>
 }

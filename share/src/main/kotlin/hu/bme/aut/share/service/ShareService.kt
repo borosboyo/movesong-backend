@@ -3,14 +3,8 @@ package hu.bme.aut.share.service
 import hu.bme.aut.share.domain.SharePlatformType
 import hu.bme.aut.share.domain.Share
 import hu.bme.aut.share.repository.ShareRepository
-import hu.bme.aut.shareapi.dto.req.CreateShareReq
-import hu.bme.aut.shareapi.dto.req.GetShareByIdReq
-import hu.bme.aut.shareapi.dto.resp.GetSharesByMovesongEmailResp
-import hu.bme.aut.shareapi.dto.req.GetSharesByMovesongEmailReq
-import hu.bme.aut.shareapi.dto.resp.GetShareByIdResp
-import hu.bme.aut.shareapi.dto.req.UpdateShareReq
-import hu.bme.aut.shareapi.dto.resp.CreateShareResp
-import hu.bme.aut.shareapi.dto.resp.UpdateShareResp
+import hu.bme.aut.shareapi.dto.req.*
+import hu.bme.aut.shareapi.dto.resp.*
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -25,7 +19,7 @@ open class ShareService(
             share = shareRepository.save(Share(
                 playlistId = req.share.playlistId,
                 sharedPlaylistName = req.share.sharedPlaylistName,
-                ownerMovesongEmail = req.share.ownerMovesongEmail,
+                movesongEmail = req.share.movesongEmail,
                 visible = req.share.visible,
                 views = req.share.views,
                 sharePlatformType = SharePlatformType.valueOf(req.share.sharePlatformType),
@@ -38,7 +32,7 @@ open class ShareService(
     @Transactional
     open fun getSharesByMovesongEmail(req: GetSharesByMovesongEmailReq): GetSharesByMovesongEmailResp {
         return GetSharesByMovesongEmailResp(
-            shareRepository.findAllByOwnerMovesongEmail(req.movesongEmail).map { it.toDto() }
+            shareRepository.findAllBymovesongEmail(req.movesongEmail).map { it.toDto() }
         )
     }
 
@@ -57,6 +51,14 @@ open class ShareService(
         share.update(req.share)
         return UpdateShareResp(
             share = shareRepository.save(share).toDto()
+        )
+    }
+
+    @Transactional
+    open fun deleteShares(req: DeleteSharesReq): DeleteSharesResp {
+        shareRepository.deleteAllByMovesongEmail(req.movesongEmail)
+        return DeleteSharesResp(
+            success = true
         )
     }
 }

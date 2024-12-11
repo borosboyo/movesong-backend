@@ -5,9 +5,11 @@ import io.swagger.v3.oas.annotations.info.Info
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.cloud.openfeign.EnableFeignClients
+import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = ["hu.bme.aut.emailapi.api", "hu.bme.aut.emailapi.dto"])
+@EnableScheduling
+@EnableFeignClients(basePackages = ["hu.bme.aut.emailapi.api", "hu.bme.aut.emailapi.dto", "hu.bme.aut.subscriptionapi.api", "hu.bme.aut.subscriptionapi.dto", "hu.bme.aut.shareapi.api", "hu.bme.aut.shareapi.dto", "hu.bme.aut.transformapi.api", "hu.bme.aut.transformapi.dto"])
 @OpenAPIDefinition(
     info = Info(
         title = "User API",

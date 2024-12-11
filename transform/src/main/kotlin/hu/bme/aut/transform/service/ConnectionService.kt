@@ -10,9 +10,11 @@ import hu.bme.aut.transform.repository.ConnectionRepository
 import hu.bme.aut.transformapi.dto.ConnectionDto
 import hu.bme.aut.transformapi.dto.req.ConnectSpotifyAccountReq
 import hu.bme.aut.transformapi.dto.req.ConnectYoutubeAccountReq
+import hu.bme.aut.transformapi.dto.req.DeleteConnectionsByMovesongEmailReq
 import hu.bme.aut.transformapi.dto.req.FindConnectionsByMovesongEmailReq
 import hu.bme.aut.transformapi.dto.resp.ConnectSpotifyAccountResp
 import hu.bme.aut.transformapi.dto.resp.ConnectYoutubeAccountResp
+import hu.bme.aut.transformapi.dto.resp.DeleteConnectionsByMovesongEmailResp
 import hu.bme.aut.transformapi.dto.resp.FindConnectionsByMovesongEmailResp
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
@@ -30,29 +32,29 @@ open class ConnectionService(
 ) {
     //Youtube
     @Value("\${movesong.youtube.tokenUri}")
-    private lateinit var youtubeTokenUri: String
+    lateinit var youtubeTokenUri: String
 
     @Value("\${movesong.youtube.clientId}")
-    private lateinit var youtubeClientId: String
+    lateinit var youtubeClientId: String
 
     @Value("\${movesong.youtube.clientSecret}")
-    private lateinit var youtubeClientSecret: String
+    lateinit var youtubeClientSecret: String
 
     @Value("\${movesong.youtube.redirectUri}")
-    private lateinit var youtubeRedirectUri: String
+    lateinit var youtubeRedirectUri: String
 
     //Spotify
     @Value("\${movesong.spotify.tokenUri}")
-    private lateinit var spotifyTokenUri: String
+    lateinit var spotifyTokenUri: String
 
     @Value("\${movesong.spotify.clientId}")
-    private lateinit var spotifyClientId: String
+    lateinit var spotifyClientId: String
 
     @Value("\${movesong.spotify.clientSecret}")
-    private lateinit var spotifyClientSecret: String
+    lateinit var spotifyClientSecret: String
 
     @Value("\${movesong.spotify.redirectUri}")
-    private lateinit var spotifyRedirectUri: String
+    lateinit var spotifyRedirectUri: String
 
     @Transactional
     open fun connectYoutubeAccount(req: ConnectYoutubeAccountReq): ConnectYoutubeAccountResp {
@@ -111,6 +113,14 @@ open class ConnectionService(
         val connections = connectionRepository.findAllByMovesongEmail(req.movesongEmail)
         val connectionsDto = connections.map { connection -> ConnectionDto(connection.movesongEmail, connection.platformType.toString(), connection.accessToken, connection.refreshToken) }
         return FindConnectionsByMovesongEmailResp(connectionsDto)
+    }
+
+    @Transactional
+    open fun deleteConnectionsByMovesongEmail(req: DeleteConnectionsByMovesongEmailReq): DeleteConnectionsByMovesongEmailResp {
+        connectionRepository.deleteAllByMovesongEmail(req.movesongEmail)
+        return DeleteConnectionsByMovesongEmailResp(
+            success = true
+        )
     }
 
     companion object {

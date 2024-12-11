@@ -30,7 +30,13 @@ class WebSecurityConfig(
         "/user/resendForgotPassword",
         "/user/checkForgotPasswordToken",
         "/user/contact",
+        "/user/saveForgotPassword",
         "/email/sendEmail",
+        "/share/deleteShares",
+        "/transform/deleteConnectionsByMovesongEmail",
+        "/transform/deleteTransformsByMovesongEmail",
+        "/transform/deleteSyncsByMovesongEmail",
+        "/subscription/cancelSubscription",
         "/share/getShareById",
     )
 

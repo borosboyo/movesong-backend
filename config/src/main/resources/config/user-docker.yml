@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8085
 
 eureka:
   client:
@@ -12,7 +12,13 @@ logging:
   level:
     root: DEBUG
     org.springframework.cloud.netflix.eureka: DEBUG
-
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.user: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}user.log
 
 springdoc:
   packagesToScan: hu.bme.aut.user
@@ -60,5 +66,5 @@ db:
   password: root
 
 movesong:
-  jwtSecret: ${MOVESONG_JWT_SECRET}
-  jwtExpiration: ${MOVESONG_JWT_EXPIRATION}
+  jwtSecret: MUST_BE_SPECIFIED
+  jwtExpiration: 6000

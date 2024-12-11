@@ -45,7 +45,6 @@ open class YoutubeToSpotifyService(
                     "Created by Movesong",
                     spotifyApi
                 )
-                println("Generated a playlist Successfully: " + spotifyPlaylist.name)
             }
         }
         val spotifyUrisToBeAdded = ArrayList<String>()

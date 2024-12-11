@@ -172,11 +172,13 @@ services:
       - local
     depends_on:
       - postgres
-# frontend:
-#   image: borosboyo/frontend
-#   ports:
-#     - "5173:5173"
-#   container_name: fronten
+  frontend:
+    image: borosboyo/frontend:1.0-SNAPSHOT
+    ports:
+      - "5173:5173"
+    container_name: frontend
+    networks:
+      - local
 
 networks:
   local:
