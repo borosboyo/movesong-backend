@@ -9,6 +9,14 @@ eureka:
 logging:
   pattern: 
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+  level:
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.share: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}share.log
 
 springdoc:
   packagesToScan: hu.bme.aut.share
