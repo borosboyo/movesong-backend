@@ -1,14 +1,23 @@
 server:
-  port: 8080
+  port: 8081
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://discovery:8061/eureka/
-      
+
 logging:
-  pattern: 
+  pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+  level:
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.email: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}email.log
+
 
 springdoc:
   packagesToScan: hu.bme.aut.email
@@ -39,6 +48,18 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         ddl-auto: update
     generate-ddl: true
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 587
+    username: MUST_BE_SPECIFIED
+    password: MUST_BE_SPECIFIED
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+            required: false
 
 management:
   tracing:
@@ -50,7 +71,11 @@ management:
 
 db:
   name: movesong-email
-  host: localhost
+  host: postgres
   port: 5432
   username: root
   password: root
+
+movesong:
+  mail:
+    from: "movesong@info.com"

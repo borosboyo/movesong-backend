@@ -9,6 +9,16 @@ eureka:
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+  level:
+    root: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.gateway: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}gateway.log
 
 spring:
   output:
@@ -20,24 +30,6 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: employee
-          uri: lb://employee
-          predicates:
-            - Path=/employee/**
-          filters:
-            - RewritePath=/employee/(?<path>.*), /$\{path}
-        - id: department
-          uri: lb://department
-          predicates:
-            - Path=/department/**
-          filters:
-            - RewritePath=/department/(?<path>.*), /$\{path}
-        - id: organization
-          uri: lb://organization
-          predicates:
-            - Path=/organization/**
-          filters:
-            - RewritePath=/organization/(?<path>.*), /$\{path}
         - id: email
           uri: lb://email
           predicates:
@@ -78,12 +70,6 @@ spring:
 springdoc:
   swagger-ui:
     urls:
-      - name: employee
-        url: /v3/api-docs/employee
-      - name: department
-        url: /v3/api-docs/department
-      - name: organization
-        url: /v3/api-docs/organization
       - name: email
         url: /v3/api-docs/email
       - name: share
@@ -101,3 +87,7 @@ management:
   zipkin:
     tracing:
       endpoint: http://zipkin:9411/api/v2/spans
+
+movesong:
+  jwtSecret: MUST_BE_SPECIFIED
+  jwtExpiration: 6000

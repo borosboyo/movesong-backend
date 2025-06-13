@@ -9,6 +9,16 @@ eureka:
 logging:
   pattern: 
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+  level:
+    root: DEBUG
+    org.springframework.cloud.netflix.eureka: DEBUG
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.user: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}user.log
 
 springdoc:
   packagesToScan: hu.bme.aut.user
@@ -47,7 +57,11 @@ management:
 
 db:
   name: movesong-user
-  host: localhost
+  host: postgres
   port: 5432
   username: root
   password: root
+
+movesong:
+  jwtSecret: MUST_BE_SPECIFIED
+  jwtExpiration: 6000

@@ -9,6 +9,14 @@ eureka:
 logging:
   pattern: 
     console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId:-},%X{spanId:-}] ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+  level:
+    org.springframework.boot: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: ERROR
+    hu.bme.aut.subscription: INFO
+  file:
+    path: ./src/main/resources/logs/
+    name: ${logging.file.path}subscription.log
 
 springdoc:
   packagesToScan: hu.bme.aut.subscription
@@ -51,3 +59,8 @@ db:
   port: 5432
   username: root
   password: root
+
+movesong:
+  clientBaseUrl: http://localhost:5173
+  stripe:
+    secretKey: MUST_BE_SPECIFIED
